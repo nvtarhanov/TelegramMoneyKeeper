@@ -9,6 +9,16 @@ type Config struct {
 	Telegram_token string `mapstructure:"Telegram_token"`
 	Port           string `mapstructure:"Port"`
 	Telegram_url   string `mapstructure:"Telegram_url"`
+	DbConfig       DatabaseConfig
+}
+
+type DatabaseConfig struct {
+	Host     string `mapstructure:"Host"`
+	Username string `mapstructure:"Username"`
+	Password string `mapstructure:"Password"`
+	Dbname   string `mapstructure:"Dbname"`
+	Port     string `mapstructure:"Port"`
+	Sslmode  string `mapstructure:"Sslmode"`
 }
 
 func Init() (*Config, error) {
@@ -21,6 +31,10 @@ func Init() (*Config, error) {
 
 	var cfg Config
 	if err := viper.Unmarshal(&cfg); err != nil {
+		return nil, err
+	}
+
+	if err := viper.UnmarshalKey("database", &cfg.DbConfig); err != nil {
 		return nil, err
 	}
 
