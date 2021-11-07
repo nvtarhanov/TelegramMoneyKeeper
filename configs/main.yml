@@ -1,0 +1,4 @@
+ngrok_url: "https://e761-94-181-83-5.ngrok.io"
+telegram_token: "2141495170:AAHxcBtBSR2ALwk88DRBZfah0q_Td_cFFdc"
+port: "80"
+telegram_url: "https://api.telegram.org/bot"
