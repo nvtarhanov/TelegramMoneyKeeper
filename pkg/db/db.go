@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 
+	"github.com/nvtarhanov/TelegramMoneyKeeper/model"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/pkg/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -20,7 +21,7 @@ func Init(config config.DatabaseConfig) error {
 		return err
 	}
 
-	DB.AutoMigrate()
+	DB.AutoMigrate(&model.Account{}, &model.Entrie{}, &model.Transaction{})
 
 	return nil
 }
