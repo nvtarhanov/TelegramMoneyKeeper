@@ -1,9 +1,11 @@
 package model
 
 import (
+	"errors"
 	"time"
 
 	"github.com/nvtarhanov/TelegramMoneyKeeper/pkg/db"
+	"gorm.io/gorm"
 )
 
 type Account struct {
@@ -21,7 +23,13 @@ func CreateAccount(chatId int) error {
 
 	database := db.GetDB()
 
-	result := database.Create(&account)
+	result := database.First(&account, "chat_id = ?", account.ChatId)
+
+	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return errors.New("Account already exists")
+	}
+
+	result = database.Create(&account)
 
 	if result.Error != nil {
 		return result.Error
@@ -30,24 +38,63 @@ func CreateAccount(chatId int) error {
 	return nil
 }
 
-func SetName(name string) error {
+func SetName(a *Account, name string) error {
+
+	a.Name = name
+
+	database := db.GetDB()
+
+	result := database.Save(&a)
+
+	if result.Error != nil {
+		return result.Error
+	}
 
 	return nil
 }
 
-func SetMoneyGoal(moneyGoal int) error {
+func SetMoneyGoal(a *Account, moneyGoal int) error {
+
+	a.MoneyGoal = moneyGoal
+
+	database := db.GetDB()
+
+	result := database.Save(&a)
+
+	if result.Error != nil {
+		return result.Error
+	}
 
 	return nil
 }
 
-func SetStartSum(startsum int) error {
+func SetStartSum(a *Account, startsum int) error {
+
+	a.Startsum = startsum
+
+	database := db.GetDB()
+
+	result := database.Save(&a)
+
+	if result.Error != nil {
+		return result.Error
+	}
 
 	return nil
 }
 
-func GetAccountBySessionID(chatId int) (Account, error) {
+func GetAccountBySessionID(chatId int) (*Account, error) {
 
-	acc := Account{}
+	account := Account{ChatId: chatId}
 
-	return acc, nil
+	database := db.GetDB()
+
+	result := database.First(&account, "chat_id = ?", account.ChatId)
+
+	if result.Error != nil {
+		return &account, result.Error
+	}
+
+	return &account, nil
+
 }
