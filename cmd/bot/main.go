@@ -23,6 +23,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	//Better to move into db package
 	db.GetDB().AutoMigrate(&model.Account{}, &model.Entrie{}, &model.Transaction{})
 
 	//fmt.Println(cfg.DbConfig)
