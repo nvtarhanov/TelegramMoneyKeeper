@@ -27,3 +27,19 @@ func RandomString(n int) string {
 
 	return sb.String()
 }
+
+func RandomName() string {
+	return RandomString(8)
+}
+
+func RandomSumGoal() int {
+	return RandomInt(0, 999999)
+}
+
+func RandomStartSum() int {
+	return RandomInt(0, 99999)
+}
+
+func RandomChatId() int {
+	return RandomInt(0, 100)
+}

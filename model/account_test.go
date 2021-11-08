@@ -3,10 +3,12 @@ package model
 import (
 	"log"
 	"testing"
+
+	"github.com/nvtarhanov/TelegramMoneyKeeper/util"
 )
 
 func TestCreateAccount(t *testing.T) {
-	chatId := 12345678
+	chatId := util.RandomChatId()
 
 	if err := CreateAccount(chatId); err != nil {
 		log.Fatal("Cannot create account")
@@ -15,7 +17,11 @@ func TestCreateAccount(t *testing.T) {
 }
 
 func TestGetAccountById(t *testing.T) {
-	chatId := 12345678
+	chatId := util.RandomChatId()
+
+	if err := CreateAccount(chatId); err != nil {
+		log.Fatal("Cannot create account")
+	}
 
 	if _, err := GetAccountBySessionID(chatId); err != nil {
 		log.Fatal("Cannot find account by id")
@@ -24,8 +30,12 @@ func TestGetAccountById(t *testing.T) {
 
 func TestSetName(t *testing.T) {
 
-	chatId := 12345678
-	testName := "test"
+	chatId := util.RandomChatId()
+	testName := util.RandomName()
+
+	if err := CreateAccount(chatId); err != nil {
+		log.Fatal("Cannot create account")
+	}
 
 	account, err := GetAccountBySessionID(chatId)
 	if err != nil {
@@ -40,8 +50,12 @@ func TestSetName(t *testing.T) {
 
 func TestSetMoneyGoal(t *testing.T) {
 
-	chatId := 12345678
-	testMoneyGoal := 99
+	chatId := util.RandomChatId()
+	testMoneyGoal := util.RandomSumGoal()
+
+	if err := CreateAccount(chatId); err != nil {
+		log.Fatal("Cannot create account")
+	}
 
 	account, err := GetAccountBySessionID(chatId)
 	if err != nil {
@@ -56,8 +70,12 @@ func TestSetMoneyGoal(t *testing.T) {
 
 func TestSetStartSum(t *testing.T) {
 
-	chatId := 12345678
-	testStartSum := 88
+	chatId := util.RandomChatId()
+	testStartSum := util.RandomStartSum()
+
+	if err := CreateAccount(chatId); err != nil {
+		log.Fatal("Cannot create account")
+	}
 
 	account, err := GetAccountBySessionID(chatId)
 	if err != nil {
