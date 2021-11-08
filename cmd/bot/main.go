@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/nvtarhanov/TelegramMoneyKeeper/model"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/pkg/config"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/pkg/db"
 )
@@ -21,6 +22,8 @@ func main() {
 	if err := db.Init(cfg.DbConfig); err != nil {
 		log.Fatal(err)
 	}
+
+	db.GetDB().AutoMigrate(&model.Account{}, &model.Entrie{}, &model.Transaction{})
 
 	//fmt.Println(cfg.DbConfig)
 
