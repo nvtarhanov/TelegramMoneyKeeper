@@ -1,6 +1,11 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"log"
+
+	"github.com/fsnotify/fsnotify"
+	"github.com/spf13/viper"
+)
 
 // It is better to store some of those variables in .env file,
 //but for debugging  it is ok
@@ -30,6 +35,29 @@ func Init() (*Config, error) {
 	}
 
 	var cfg Config
+	if err := viper.Unmarshal(&cfg); err != nil {
+		return nil, err
+	}
+
+	if err := viper.UnmarshalKey("database", &cfg.DbConfig); err != nil {
+		return nil, err
+	}
+
+	viper.OnConfigChange(func(e fsnotify.Event) {
+		log.Printf("Config file changed:", e.Name)
+		if err := viper.ReadInConfig(); err != nil {
+			log.Fatal("Read config error")
+		}
+
+	})
+	viper.WatchConfig()
+
+	return &cfg, nil
+}
+
+func GetConfig() (*Config, error) {
+	var cfg Config
+
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, err
 	}

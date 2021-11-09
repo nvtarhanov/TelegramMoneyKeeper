@@ -1,19 +1,14 @@
 package router
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/controllers"
 )
 
 func Init() *gin.Engine {
 	r := gin.Default()
 
-	r.POST("/api/v1/update", update)
+	r.POST("/api/v1/update", controllers.Handle) //update)
 
 	return r
-}
-
-func update(c *gin.Context) {
-	fmt.Println("listening")
 }
