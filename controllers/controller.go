@@ -83,6 +83,7 @@ func switchCommand(chatID int, msgText string) error {
 	_, err := config.GetConfig()
 	if err != nil {
 		log.Fatal("Failed to get config data")
+		return err
 	}
 
 	switch strings.ToLower(msgText) {
@@ -95,7 +96,7 @@ func switchCommand(chatID int, msgText string) error {
 	case "/setsum":
 		businesslogick.SetStartSum(chatID)
 	case "/setname":
-		businesslogick.SetStartSum(chatID)
+		businesslogick.SetName(chatID)
 	default:
 		telegramapi.SendMessage(chatID, "Unregistered command")
 	}

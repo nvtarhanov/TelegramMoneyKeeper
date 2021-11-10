@@ -5,9 +5,9 @@ import "github.com/nvtarhanov/TelegramMoneyKeeper/pkg/db"
 type UserState string
 
 const (
-	Name      UserState = "Name"
-	MoneyGoal UserState = "MoneyGoal"
-	StartSum  UserState = "StartSum"
+	Name      UserState = "/setname"
+	MoneyGoal UserState = "/setsum"
+	StartSum  UserState = "/setname"
 )
 
 type State struct {

@@ -37,3 +37,7 @@ func SetMoneyGoal(chatID int) {
 func SetStartSum(chatID int) {
 
 }
+
+func SetName(chatID int) {
+
+}
