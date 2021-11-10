@@ -7,6 +7,7 @@ import (
 	"github.com/nvtarhanov/TelegramMoneyKeeper/telegramapi"
 )
 
+//    /start command in telegram
 func RegisterAccount(chatID int) {
 
 	//Check if an account exists
@@ -17,7 +18,15 @@ func RegisterAccount(chatID int) {
 	//Create account
 	if err := model.CreateAccount(chatID); err != nil {
 		log.Fatal("Cannot create account")
+		return
 	}
+
+	if err := model.WriteState(chatID, model.Name); err != nil {
+		log.Fatal("Cannot write state")
+		return
+	}
+
+	telegramapi.SendMessage(chatID, "Write your name!")
 
 }
 

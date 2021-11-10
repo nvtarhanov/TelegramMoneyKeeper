@@ -94,6 +94,8 @@ func switchCommand(chatID int, msgText string) error {
 		businesslogick.SetMoneyGoal(chatID)
 	case "/setsum":
 		businesslogick.SetStartSum(chatID)
+	case "/setname":
+		businesslogick.SetStartSum(chatID)
 	default:
 		telegramapi.SendMessage(chatID, "Unregistered command")
 	}
