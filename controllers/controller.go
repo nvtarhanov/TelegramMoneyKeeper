@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/controllers/businesslogick"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/pkg/config"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/telegramapi"
 	"github.com/spf13/viper"
 )
 
@@ -77,28 +80,23 @@ func Handle(c *gin.Context) {
 
 func switchCommand(chatID int, msgText string) error {
 
-	cfg, err := config.GetConfig()
+	_, err := config.GetConfig()
 	if err != nil {
 		log.Fatal("Failed to get config data")
 	}
 
-	switch msgText {
+	switch strings.ToLower(msgText) {
 	case "/start":
-		sendMessage(cfg, chatID, "Fuck off start")
+		businesslogick.RegisterAccount(chatID)
 	case "/help":
-		sendMessage(cfg, chatID, "Fuck off help")
+		businesslogick.GetHelp(chatID)
+	case "/setgoal":
+		businesslogick.SetMoneyGoal(chatID)
+	case "/setsum":
+		businesslogick.SetStartSum(chatID)
 	default:
-		sendMessage(cfg, chatID, "Неопознанная команда")
+		telegramapi.SendMessage(chatID, "Unregistered command")
 	}
 
 	return nil
-}
-
-//Send message - msgText into tg chat with id - chatID
-func sendMessage(cfg *config.Config, chatID int, msgText string) {
-	message := fmt.Sprintf("%s%s/sendMessage?chat_id=%d&text=Received: %s", cfg.Telegram_url, cfg.Telegram_token, chatID, msgText)
-
-	if _, err := http.Get(message); err != nil {
-		log.Fatal(err)
-	}
 }
