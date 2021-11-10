@@ -1,0 +1,1 @@
+Telegram bot which can help you with your money goals written from scratch with gorm, gin and viper.
