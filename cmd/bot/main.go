@@ -27,13 +27,13 @@ func main() {
 	}
 
 	//Better to move into db package
-	db.GetDB().AutoMigrate(&model.Account{}, &model.Entrie{}, &model.Transaction{})
+	db.GetDB().AutoMigrate(&model.Account{}, &model.Entrie{}, &model.Transaction{}, &model.State{})
 
 	//3.Setup webhook
 	data := url.Values{
 		"url": {cfg.Ngrok_url + "/api/v1/update"},
 	}
-	_, err := http.PostForm("https://api.telegram.org/bot"+cfg.Telegram_token+"/setWebhook", data)
+	_, err := http.PostForm(cfg.Telegram_url+cfg.Telegram_token+"/setWebhook", data)
 
 	if err != nil {
 		log.Fatal("Unable to setup webhook")
@@ -45,15 +45,3 @@ func main() {
 	r.Run(":" + cfg.Port)
 
 }
-
-// // if private or group
-// if message.Message.Chat.ID != 0 {
-// 	fmt.Println(message.Message.Chat.ID, message.Message.Text)
-// 	// chatID = message.Message.Chat.ID
-// 	// msgText = message.Message.Text
-// } else {
-// 	// if channel
-// 	fmt.Println(message.ChannelPost.Chat.ID, message.ChannelPost.Text)
-// 	// chatID = message.ChannelPost.Chat.ID
-// 	// msgText = message.ChannelPost.Text
-// }
