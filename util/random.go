@@ -43,3 +43,7 @@ func RandomStartSum() int {
 func RandomChatId() int {
 	return RandomInt(0, 100)
 }
+
+func RandomSum() int {
+	return RandomInt(0, 99999)
+}

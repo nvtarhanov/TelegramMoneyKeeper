@@ -2,21 +2,13 @@ package model
 
 import "github.com/nvtarhanov/TelegramMoneyKeeper/pkg/db"
 
-type UserState string
-
-const (
-	Name      UserState = "/setname"
-	MoneyGoal UserState = "/setsum"
-	StartSum  UserState = "/setname"
-)
-
 type State struct {
 	ID    int `gorm:"primaryKey"`
-	State UserState
+	State string
 }
 
-func GetCurrentStateByID(chatID int) (UserState, error) {
-	var us UserState
+func GetCurrentStateByID(chatID int) (string, error) {
+	var us string
 
 	currentState := State{ID: chatID}
 
@@ -33,11 +25,26 @@ func GetCurrentStateByID(chatID int) (UserState, error) {
 	return us, nil
 }
 
-func WriteState(chatID int, state UserState) error {
+func WriteState(chatID int, state string) error {
 	currentState := State{ID: chatID, State: state}
 
 	database := db.GetDB()
 	result := database.Create(&currentState)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func UpdateState(chatID int, state string) error {
+
+	currentState := State{ID: chatID, State: state}
+
+	database := db.GetDB()
+
+	result := database.Save(&currentState)
 
 	if result.Error != nil {
 		return result.Error
