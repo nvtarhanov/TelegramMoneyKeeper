@@ -9,8 +9,8 @@ import (
 )
 
 type Account struct {
-	ID        uint `gorm:"primaryKey"`
-	ChatId    int  `gorm:"index"`
+	ID int `gorm:"primaryKey"`
+	//ChatId    int  `gorm:"index"`
 	CreatedAt time.Time
 	Name      string `gorm:"index"`
 	MoneyGoal int
@@ -19,11 +19,11 @@ type Account struct {
 
 func CreateAccount(chatId int) error {
 
-	account := Account{ChatId: chatId}
+	account := Account{ID: chatId}
 
 	database := db.GetDB()
 
-	result := database.First(&account, "chat_id = ?", account.ChatId)
+	result := database.First(&account, "id = ?", account.ID)
 
 	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return errors.New("Account already exists")
@@ -85,11 +85,11 @@ func SetStartSum(a *Account, startsum int) error {
 
 func GetAccountBySessionID(chatId int) (*Account, error) {
 
-	account := Account{ChatId: chatId}
+	account := Account{ID: chatId}
 
 	database := db.GetDB()
 
-	result := database.First(&account, "chat_id = ?", account.ChatId)
+	result := database.First(&account, "id = ?", account.ID)
 
 	if result.Error != nil {
 		return &account, result.Error

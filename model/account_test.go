@@ -28,7 +28,7 @@ func TestGetAccountById(t *testing.T) {
 		t.Errorf("Cannot find account by id")
 	}
 
-	if account.ChatId != chatId {
+	if account.ID != chatId {
 		t.Errorf("Incorrect chatId")
 	}
 }

@@ -10,3 +10,10 @@ type Transaction struct {
 	Account   Account `gorm:"foreignKey:AccountID"`
 	Value     int
 }
+
+func CreateTransaction(account *Account, value int) error {
+
+	// transaction := Transaction{AccountID: account.ID, Value: value}
+
+	return nil
+}
