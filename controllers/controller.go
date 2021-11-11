@@ -2,14 +2,10 @@ package controllers
 
 import (
 	"fmt"
-	"log"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nvtarhanov/TelegramMoneyKeeper/controllers/businesslogick"
-	"github.com/nvtarhanov/TelegramMoneyKeeper/pkg/config"
-	"github.com/nvtarhanov/TelegramMoneyKeeper/telegramapi"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/commands"
 	"github.com/spf13/viper"
 )
 
@@ -71,35 +67,9 @@ func Handle(c *gin.Context) {
 
 	fmt.Println(chatID, msgText, viper.GetInt("port"))
 
-	if err := switchCommand(chatID, msgText); err != nil {
+	if err := commands.SwitchCommand(chatID, msgText); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-}
-
-func switchCommand(chatID int, msgText string) error {
-
-	_, err := config.GetConfig()
-	if err != nil {
-		log.Fatal("Failed to get config data")
-		return err
-	}
-
-	switch strings.ToLower(msgText) {
-	case "/start":
-		businesslogick.RegisterAccount(chatID)
-	case "/help":
-		businesslogick.GetHelp(chatID)
-	case "/setgoal":
-		businesslogick.SetMoneyGoal(chatID)
-	case "/setsum":
-		businesslogick.SetStartSum(chatID)
-	case "/setname":
-		businesslogick.SetName(chatID)
-	default:
-		telegramapi.SendMessage(chatID, "Unregistered command")
-	}
-
-	return nil
 }
