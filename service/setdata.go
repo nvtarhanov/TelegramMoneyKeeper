@@ -1,11 +1,8 @@
-package businesslogick
+package service
 
 import (
 	"log"
 	"strconv"
-
-	"github.com/nvtarhanov/TelegramMoneyKeeper/model"
-	"github.com/nvtarhanov/TelegramMoneyKeeper/telegramapi"
 )
 
 //    /start command in telegram
@@ -23,13 +20,6 @@ func RegisterAccount(chatID int) {
 		return
 	}
 
-	if err := model.WriteState(chatID, ""); err != nil {
-		log.Fatal("Cannot write state")
-		return
-	}
-
-	telegramapi.SendMessage(chatID, "Account created!")
-
 }
 
 func SetName(chatID int, data string) {
@@ -45,10 +35,6 @@ func SetName(chatID int, data string) {
 		return
 	}
 
-	if err := model.UpdateState(chatID, ""); err != nil {
-		log.Fatal("Cannot update state")
-		return
-	}
 }
 
 func SetMoneyGoal(chatID int, data string) {
@@ -71,11 +57,6 @@ func SetMoneyGoal(chatID int, data string) {
 		return
 	}
 
-	if err := model.UpdateState(chatID, ""); err != nil {
-		log.Fatal("Cannot update state")
-		return
-	}
-
 }
 
 func SetStartSum(chatID int, data string) {
@@ -87,7 +68,7 @@ func SetStartSum(chatID int, data string) {
 		return
 	}
 
-	account, err := model.GetAccountBySessionID(chatID)
+	account, err := GetAccountBySessionID(chatID)
 	if err != nil {
 		log.Fatal("Cannot find account by id")
 		return
@@ -95,11 +76,6 @@ func SetStartSum(chatID int, data string) {
 
 	if err := model.SetStartSum(account, value); err != nil {
 		log.Fatal("Cannot set start sum for account")
-		return
-	}
-
-	if err := model.UpdateState(chatID, ""); err != nil {
-		log.Fatal("Cannot update state")
 		return
 	}
 

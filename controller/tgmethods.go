@@ -1,4 +1,4 @@
-package telegramapi
+package controller
 
 import (
 	"fmt"

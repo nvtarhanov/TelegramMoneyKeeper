@@ -1,54 +1,6 @@
 package model
 
-import "github.com/nvtarhanov/TelegramMoneyKeeper/pkg/db"
-
 type State struct {
 	ID    int `gorm:"primaryKey"`
-	State string
-}
-
-func GetCurrentStateByID(chatID int) (string, error) {
-	var us string
-
-	currentState := State{ID: chatID}
-
-	database := db.GetDB()
-
-	result := database.First(&currentState, "ID = ?", currentState.ID)
-
-	if result.Error != nil {
-		return "", result.Error
-	}
-
-	us = currentState.State
-
-	return us, nil
-}
-
-func WriteState(chatID int, state string) error {
-	currentState := State{ID: chatID, State: state}
-
-	database := db.GetDB()
-	result := database.Create(&currentState)
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
-}
-
-func UpdateState(chatID int, state string) error {
-
-	currentState := State{ID: chatID, State: state}
-
-	database := db.GetDB()
-
-	result := database.Save(&currentState)
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
+	State int
 }

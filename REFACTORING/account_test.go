@@ -1,4 +1,4 @@
-package model
+package REFACTORING
 
 import (
 	"testing"
@@ -87,9 +87,9 @@ func TestSetMoneyGoal(t *testing.T) {
 	chatId := util.RandomChatId()
 	testMoneyGoal := util.RandomSumGoal()
 
-	if err := CreateAccount(chatId); err != nil {
-		t.Errorf("Cannot create account")
-	}
+	// if err := CreateAccount(chatId); err != nil {
+	// 	t.Errorf("Cannot create account")
+	// }
 
 	account, err := GetAccountBySessionID(chatId)
 	if err != nil {
@@ -107,9 +107,9 @@ func TestSetStartSum(t *testing.T) {
 	chatId := util.RandomChatId()
 	testStartSum := util.RandomStartSum()
 
-	if err := CreateAccount(chatId); err != nil {
-		t.Errorf("Cannot create account")
-	}
+	// if err := CreateAccount(chatId); err != nil {
+	// 	t.Errorf("Cannot create account")
+	// }
 
 	account, err := GetAccountBySessionID(chatId)
 	if err != nil {

@@ -1,9 +1,9 @@
-package db
+package database
 
 import (
 	"fmt"
 
-	"github.com/nvtarhanov/TelegramMoneyKeeper/pkg/config"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

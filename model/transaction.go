@@ -1,10 +1,6 @@
 package model
 
-import (
-	"time"
-
-	"github.com/nvtarhanov/TelegramMoneyKeeper/pkg/db"
-)
+import "time"
 
 type Transaction struct {
 	ID        uint `gorm:"primaryKey"`
@@ -13,15 +9,4 @@ type Transaction struct {
 	AccountID int
 	Account   Account `gorm:"foreignKey:AccountID"`
 	Value     int
-}
-
-func CreateTransaction(account *Account, value int) error {
-
-	transaction := Transaction{AccountID: account.ID, Value: value}
-
-	if err := db.GetDB().Create(&transaction).Error; err != nil {
-		return err
-	}
-
-	return nil
 }

@@ -1,11 +1,10 @@
-package controllers
+package controller
 
 import (
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nvtarhanov/TelegramMoneyKeeper/controllers/businesslogick"
 	"github.com/spf13/viper"
 )
 
@@ -67,9 +66,9 @@ func Handle(c *gin.Context) {
 
 	fmt.Println(chatID, msgText, viper.GetInt("port"))
 
-	if err := businesslogick.SwitchCommand(chatID, msgText); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	// if err := businesslogick.SwitchCommand(chatID, msgText); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
 
 }
