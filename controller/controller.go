@@ -52,6 +52,10 @@ type Entities struct {
 	Length int    `json:"length"`
 }
 
+//SERVER
+type Server struct {
+}
+
 func Handle(c *gin.Context) {
 
 	var message ReceiveMessage

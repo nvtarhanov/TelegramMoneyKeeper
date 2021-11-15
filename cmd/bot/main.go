@@ -1,5 +1,14 @@
 package main
 
+import (
+	"log"
+
+	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/config"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/database"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/router"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/repository"
+)
+
 // import (
 // 	"log"
 // 	"net/http"
@@ -11,37 +20,40 @@ package main
 // 	"github.com/nvtarhanov/TelegramMoneyKeeper/router"
 // )
 
-// func main() {
+func main() {
 
-// 	//1.Init config
-// 	cfg, error := config.Init()
+	//1.Init config
+	cfg, error := config.NewConfig()
 
-// 	if error != nil {
-// 		log.Fatal(error)
-// 	}
+	if error != nil {
+		log.Fatal(error)
+	}
 
-// 	//2.Init database
+	//2.Init database
 
-// 	if err := db.Init(cfg.DbConfig); err != nil {
-// 		log.Fatal(err)
-// 	}
+	db, err := database.Init(cfg.DbConfig)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-// 	//Better to move into db package
-// 	db.GetDB().AutoMigrate(&model.Account{}, &model.Entrie{}, &model.Transaction{}, &model.State{})
+	userRepository := repository.NewUserRepository(db)
 
-// 	//3.Setup webhook
-// 	data := url.Values{
-// 		"url": {cfg.Ngrok_url + "/api/v1/update"},
-// 	}
-// 	_, err := http.PostForm(cfg.Telegram_url+cfg.Telegram_token+"/setWebhook", data)
+	// 	//Better to move into db package
+	// 	db.GetDB().AutoMigrate(&model.Account{}, &model.Entrie{}, &model.Transaction{}, &model.State{})
 
-// 	if err != nil {
-// 		log.Fatal("Unable to setup webhook")
-// 	}
+	// 	//3.Setup webhook
+	// 	data := url.Values{
+	// 		"url": {cfg.Ngrok_url + "/api/v1/update"},
+	// 	}
+	// 	_, err := http.PostForm(cfg.Telegram_url+cfg.Telegram_token+"/setWebhook", data)
 
-// 	//4.Start router
-// 	r := router.Init()
+	// 	if err != nil {
+	// 		log.Fatal("Unable to setup webhook")
+	// 	}
 
-// 	r.Run(":" + cfg.Port)
+	//4.Start router
+	r := router.Init()
 
-// }
+	r.Run(":" + cfg.Port)
+
+}

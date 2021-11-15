@@ -2,84 +2,84 @@ package service
 
 import (
 	"strconv"
+
+	"github.com/nvtarhanov/TelegramMoneyKeeper/interfaces"
 )
 
-// type UserReposytory struct {
-
-// }
+type UserService struct {
+	interfaces.AccountRepository
+}
 
 //    /start command in telegram
-func RegisterAccount(chatID int) string {
+func (us *UserService) RegisterAccount(chatID int) string {
 
 	//Check if an account exists
-	_, err := model.GetAccountBySessionID(chatID)
+	_, err := us.GetAccountBySessionID(chatID)
 	if err == nil {
-		//telegramapi.SendMessage(chatID, "Welcome back!")
 		return "Welcome back!"
 	}
 	//Create account
-	if err := model.CreateAccount(chatID); err != nil {
-		//log.Fatal("Cannot create account")
+	if err := us.CreateAccount(chatID); err != nil {
 		return "Cannot create account"
 	}
 
+	return ""
+
 }
 
-func SetName(chatID int, data string) string {
+func (us *UserService) SetNameByID(chatID int, data string) string {
 
-	account, err := model.GetAccountBySessionID(chatID)
+	account, err := us.GetAccountBySessionID(chatID)
 	if err != nil {
-		//log.Fatal("Cannot find account by id")
 		return "Cannot find account by id"
 	}
 
-	if err := model.SetName(account, data); err != nil {
-		//log.Fatal("Cannot set name for account")
+	if err := us.SetName(account, data); err != nil {
 		return "Cannot set name for account"
 	}
 
+	return ""
+
 }
 
-func SetMoneyGoal(chatID int, data string) string {
+func (us *UserService) SetMoneyGoalByID(chatID int, data string) string {
 
 	value, err := strconv.Atoi(data)
 
 	if err != nil {
-		//log.Fatal("You should enter number")
 		return "You should enter number"
 	}
 
-	account, err := model.GetAccountBySessionID(chatID)
+	account, err := us.GetAccountBySessionID(chatID)
 	if err != nil {
-		//log.Fatal("Cannot find account by id")
 		return "Cannot find account by id"
 	}
 
-	if err := model.SetMoneyGoal(account, value); err != nil {
-		//log.Fatal("Cannot set money goal for account")
+	if err := us.SetMoneyGoal(account, value); err != nil {
 		return "Cannot set money goal for account"
 	}
 
+	return ""
+
 }
 
-func SetStartSum(chatID int, data string) string {
+func (us *UserService) SetStartSumByID(chatID int, data string) string {
 
 	value, err := strconv.Atoi(data)
 
 	if err != nil {
-		//log.Fatal("You should enter number")
 		return "You should enter number"
 	}
 
-	account, err := GetAccountBySessionID(chatID)
+	account, err := us.GetAccountBySessionID(chatID)
 	if err != nil {
-		//log.Fatal("Cannot find account by id")
 		return "Cannot find account by id"
 	}
 
-	if err := model.SetStartSum(account, value); err != nil {
-		//log.Fatal("Cannot set start sum for account")
+	if err := us.SetStartSum(account, value); err != nil {
 		return "Cannot set start sum for account"
 	}
+
+	return ""
 
 }

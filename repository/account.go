@@ -1,18 +1,23 @@
 package repository
 
 import (
-	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/database"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/model"
+	"gorm.io/gorm"
 )
 
-//GORM realisation
-func CreateAccount(chatId int) error {
+type UserRepository struct {
+	*gorm.DB
+}
+
+func NewUserRepository(db *gorm.DB) *UserRepository {
+	return &UserRepository{db}
+}
+
+func (db *UserRepository) CreateAccount(chatId int) error {
 
 	account := model.Account{ID: chatId}
 
-	database := database.GetDB()
-
-	result := database.Create(&account)
+	result := db.Create(&account)
 
 	if result.Error != nil {
 		return result.Error
@@ -21,13 +26,11 @@ func CreateAccount(chatId int) error {
 	return nil
 }
 
-func SetName(a *model.Account, name string) error {
+func (db *UserRepository) SetName(a *model.Account, name string) error {
 
 	a.Name = name
 
-	database := database.GetDB()
-
-	result := database.Save(&a)
+	result := db.Save(&a)
 
 	if result.Error != nil {
 		return result.Error
@@ -36,13 +39,11 @@ func SetName(a *model.Account, name string) error {
 	return nil
 }
 
-func SetMoneyGoal(a *model.Account, moneyGoal int) error {
+func (db *UserRepository) SetMoneyGoal(a *model.Account, moneyGoal int) error {
 
 	a.MoneyGoal = moneyGoal
 
-	database := database.GetDB()
-
-	result := database.Save(&a)
+	result := db.Save(&a)
 
 	if result.Error != nil {
 		return result.Error
@@ -51,13 +52,11 @@ func SetMoneyGoal(a *model.Account, moneyGoal int) error {
 	return nil
 }
 
-func SetStartSum(a *model.Account, startsum int) error {
+func (db *UserRepository) SetStartSum(a *model.Account, startsum int) error {
 
 	a.Startsum = startsum
 
-	database := database.GetDB()
-
-	result := database.Save(&a)
+	result := db.Save(&a)
 
 	if result.Error != nil {
 		return result.Error
@@ -66,13 +65,11 @@ func SetStartSum(a *model.Account, startsum int) error {
 	return nil
 }
 
-func GetAccountBySessionID(chatId int) (*model.Account, error) {
+func (db *UserRepository) GetAccountBySessionID(chatId int) (*model.Account, error) {
 
 	account := model.Account{ID: chatId}
 
-	database := database.GetDB()
-
-	result := database.First(&account, "id = ?", account.ID)
+	result := db.First(&account, "id = ?", account.ID)
 
 	if result.Error != nil {
 		return &account, result.Error

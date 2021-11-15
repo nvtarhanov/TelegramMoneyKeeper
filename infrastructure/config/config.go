@@ -26,7 +26,7 @@ type DatabaseConfig struct {
 	Sslmode  string `mapstructure:"Sslmode"`
 }
 
-func Init() (*Config, error) {
+func NewConfig() (*Config, error) {
 	viper.AddConfigPath("configs")
 	viper.SetConfigName("main")
 
