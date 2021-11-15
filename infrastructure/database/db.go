@@ -12,8 +12,6 @@ import (
 //Need to refactor this
 //https://techinscribed.com/different-approaches-to-pass-database-connection-into-controllers-in-golang/
 
-//var DB *gorm.DB
-
 func Init(config config.DatabaseConfig) (*gorm.DB, error) {
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=Asia/Shanghai", config.Host, config.Username, config.Password, config.Dbname, config.Port, "disable")
@@ -28,14 +26,6 @@ func Init(config config.DatabaseConfig) (*gorm.DB, error) {
 
 	return db, nil
 }
-
-// func GetDB() *gorm.DB {
-// 	return DB
-// }
-
-// func SetDB(db *gorm.DB) {
-// 	DB = db
-// }
 
 //Dont forget to close db connection after server stopped (defer)
 func CloseDbConnection() error {

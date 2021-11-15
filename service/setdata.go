@@ -7,19 +7,21 @@ import (
 )
 
 type UserService struct {
-	interfaces.AccountRepository
+	AccountRepository      interfaces.AccountRepository
+	StateRepository        interfaces.StateRepository
+	TransactionRepository  interfaces.TransactionRepository
+	SalaryRecordRepository interfaces.SalaryRecordRepository
 }
 
-//    /start command in telegram
 func (us *UserService) RegisterAccount(chatID int) string {
 
 	//Check if an account exists
-	_, err := us.GetAccountBySessionID(chatID)
+	_, err := us.AccountRepository.GetAccountBySessionID(chatID)
 	if err == nil {
 		return "Welcome back!"
 	}
 	//Create account
-	if err := us.CreateAccount(chatID); err != nil {
+	if err := us.AccountRepository.CreateAccount(chatID); err != nil {
 		return "Cannot create account"
 	}
 
@@ -29,12 +31,12 @@ func (us *UserService) RegisterAccount(chatID int) string {
 
 func (us *UserService) SetNameByID(chatID int, data string) string {
 
-	account, err := us.GetAccountBySessionID(chatID)
+	account, err := us.AccountRepository.GetAccountBySessionID(chatID)
 	if err != nil {
 		return "Cannot find account by id"
 	}
 
-	if err := us.SetName(account, data); err != nil {
+	if err := us.AccountRepository.SetName(account, data); err != nil {
 		return "Cannot set name for account"
 	}
 
@@ -50,12 +52,12 @@ func (us *UserService) SetMoneyGoalByID(chatID int, data string) string {
 		return "You should enter number"
 	}
 
-	account, err := us.GetAccountBySessionID(chatID)
+	account, err := us.AccountRepository.GetAccountBySessionID(chatID)
 	if err != nil {
 		return "Cannot find account by id"
 	}
 
-	if err := us.SetMoneyGoal(account, value); err != nil {
+	if err := us.AccountRepository.SetMoneyGoal(account, value); err != nil {
 		return "Cannot set money goal for account"
 	}
 
@@ -71,12 +73,12 @@ func (us *UserService) SetStartSumByID(chatID int, data string) string {
 		return "You should enter number"
 	}
 
-	account, err := us.GetAccountBySessionID(chatID)
+	account, err := us.AccountRepository.GetAccountBySessionID(chatID)
 	if err != nil {
 		return "Cannot find account by id"
 	}
 
-	if err := us.SetStartSum(account, value); err != nil {
+	if err := us.AccountRepository.SetStartSum(account, value); err != nil {
 		return "Cannot set start sum for account"
 	}
 

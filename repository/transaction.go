@@ -1,15 +1,23 @@
 package repository
 
 import (
-	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/database"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/model"
+	"gorm.io/gorm"
 )
 
-func CreateTransaction(account *model.Account, value int) error {
+type TransactionRepository struct {
+	*gorm.DB
+}
+
+func NewTransactionRepository(db *gorm.DB) *TransactionRepository {
+	return &TransactionRepository{db}
+}
+
+func (tr *TransactionRepository) CreateTransaction(account *model.Account, value int) error {
 
 	transaction := model.Transaction{AccountID: account.ID, Value: value}
 
-	if err := database.GetDB().Create(&transaction).Error; err != nil {
+	if err := tr.Create(&transaction).Error; err != nil {
 		return err
 	}
 

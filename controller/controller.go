@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/service"
 	"github.com/spf13/viper"
 )
 
@@ -52,11 +53,11 @@ type Entities struct {
 	Length int    `json:"length"`
 }
 
-//SERVER
-type Server struct {
+type TelegramController struct {
+	UserService service.UserService
 }
 
-func Handle(c *gin.Context) {
+func (tg *TelegramController) Handle(c *gin.Context) {
 
 	var message ReceiveMessage
 
@@ -74,5 +75,10 @@ func Handle(c *gin.Context) {
 	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	// 	return
 	// }
+
+	var messenger Messenger = TelegrammMessenger{}
+	messageText := ""
+
+	messenger.SendMessage(chatID, messageText)
 
 }
