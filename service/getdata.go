@@ -1,4 +1,4 @@
-package businesslogick
+package service
 
 func GetHelp(chatID int) {
 

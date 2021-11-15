@@ -5,14 +5,6 @@ import (
 	"github.com/nvtarhanov/TelegramMoneyKeeper/model"
 )
 
-type AccountRepository interface {
-	CreateAccount(chatId int) error
-	SetName(a *model.Account, name string) error
-	SetMoneyGoal(a *model.Account, moneyGoal int) error
-	SetStartSum(a *model.Account, startSum int) error
-	GetAccountBySessionID(chatId int) (*model.Account, error)
-}
-
 //GORM realisation
 func CreateAccount(chatId int) error {
 
