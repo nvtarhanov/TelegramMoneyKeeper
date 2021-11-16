@@ -5,16 +5,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type StateRepository struct {
+type StateRepositoryGorm struct {
 	*gorm.DB
 }
 
-func NewStateRepository(db *gorm.DB) *StateRepository {
-	return &StateRepository{db}
+func NewStateRepository(db *gorm.DB) *StateRepositoryGorm {
+	return &StateRepositoryGorm{db}
 }
 
-func (sr *StateRepository) GetCurrentStateByID(chatID int) (int, error) {
-	var us int
+func (sr *StateRepositoryGorm) GetCurrentStateByID(chatID int) (int, error) {
 
 	currentState := model.State{ID: chatID}
 
@@ -24,12 +23,10 @@ func (sr *StateRepository) GetCurrentStateByID(chatID int) (int, error) {
 		return 0, result.Error
 	}
 
-	us = currentState.State
-
-	return us, nil
+	return currentState.State, nil
 }
 
-func (sr *StateRepository) WriteState(chatID int, state int) error {
+func (sr *StateRepositoryGorm) WriteState(chatID int, state int) error {
 	currentState := model.State{ID: chatID, State: state}
 
 	result := sr.Create(&currentState)
@@ -41,7 +38,7 @@ func (sr *StateRepository) WriteState(chatID int, state int) error {
 	return nil
 }
 
-func (sr *StateRepository) UpdateState(chatID int, state int) error {
+func (sr *StateRepositoryGorm) UpdateState(chatID int, state int) error {
 
 	currentState := model.State{ID: chatID, State: state}
 

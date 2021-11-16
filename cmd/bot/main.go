@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/nvtarhanov/TelegramMoneyKeeper/controller"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/handler"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/config"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/database"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/router"
@@ -29,13 +29,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	userRepository := repository.NewUserRepository(db)
-	stateRepository := repository.NewStateRepository(db)
-	transactionRepository := repository.NewTransactionRepository(db)
-	entrieRepository := repository.NewEntrieRepository(db)
-
-	userService := service.UserService{AccountRepository: userRepository, StateRepository: stateRepository, TransactionRepository: transactionRepository, SalaryRecordRepository: entrieRepository}
-	telegramController := controller.TelegramController{UserService: userService}
+	//Inject dependency
+	repository := repository.NewRepository(db)
+	service := service.NewService(repository)
+	handler := handler.NewTelegramHandler(service)
 
 	//3.Setup webhook
 	data := url.Values{
@@ -48,7 +45,7 @@ func main() {
 	}
 
 	//4.Start router
-	r := router.Init(&telegramController)
+	r := router.Init(handler)
 
 	r.Run(":" + cfg.Port)
 

@@ -5,15 +5,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type EntrieRepository struct {
+type EntrieRepositoryGorm struct {
 	*gorm.DB
 }
 
-func NewEntrieRepository(db *gorm.DB) *EntrieRepository {
-	return &EntrieRepository{db}
+func NewEntrieRepository(db *gorm.DB) *EntrieRepositoryGorm {
+	return &EntrieRepositoryGorm{db}
 }
 
-func (er *EntrieRepository) CreateEntrie(chatID int) error {
+func (er *EntrieRepositoryGorm) CreateEntrie(chatID int) error {
 
 	entrie := model.Entrie{AccountID: chatID}
 
@@ -24,7 +24,7 @@ func (er *EntrieRepository) CreateEntrie(chatID int) error {
 	return nil
 }
 
-func (er *EntrieRepository) SetSalaryPerMonth(entrie *model.Entrie, value int) error {
+func (er *EntrieRepositoryGorm) SetSalaryPerMonth(entrie *model.Entrie, value int) error {
 
 	entrie.SalaryPerMonth = value
 
@@ -35,7 +35,7 @@ func (er *EntrieRepository) SetSalaryPerMonth(entrie *model.Entrie, value int) e
 	return nil
 }
 
-func (er *EntrieRepository) SetOutcomePerMonth(entrie *model.Entrie, value int) error {
+func (er *EntrieRepositoryGorm) SetOutcomePerMonth(entrie *model.Entrie, value int) error {
 
 	entrie.OutcomePerMonth = value
 
@@ -46,7 +46,7 @@ func (er *EntrieRepository) SetOutcomePerMonth(entrie *model.Entrie, value int) 
 	return nil
 }
 
-func (er *EntrieRepository) GetEntrieByAccountID(ChatID int) (*model.Entrie, error) {
+func (er *EntrieRepositoryGorm) GetEntrieByAccountID(ChatID int) (*model.Entrie, error) {
 
 	entrie := model.Entrie{AccountID: ChatID}
 

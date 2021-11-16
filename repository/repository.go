@@ -1,6 +1,9 @@
-package interfaces
+package repository
 
-import "github.com/nvtarhanov/TelegramMoneyKeeper/model"
+import (
+	"github.com/nvtarhanov/TelegramMoneyKeeper/model"
+	"gorm.io/gorm"
+)
 
 type AccountRepository interface {
 	CreateAccount(chatId int) error
@@ -25,4 +28,20 @@ type StateRepository interface {
 
 type TransactionRepository interface {
 	CreateTransaction(account *model.Account, value int) error
+}
+
+type Repository struct {
+	AccountRepository
+	SalaryRecordRepository
+	StateRepository
+	TransactionRepository
+}
+
+func NewRepository(db *gorm.DB) *Repository {
+	return &Repository{
+		AccountRepository:      NewUserRepository(db),
+		SalaryRecordRepository: NewEntrieRepository(db),
+		StateRepository:        NewStateRepository(db),
+		TransactionRepository:  NewTransactionRepository(db),
+	}
 }

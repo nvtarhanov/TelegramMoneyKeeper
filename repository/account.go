@@ -5,15 +5,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserRepository struct {
+type UserRepositoryGorm struct {
 	*gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) *UserRepository {
-	return &UserRepository{db}
+func NewUserRepository(db *gorm.DB) *UserRepositoryGorm {
+	return &UserRepositoryGorm{db}
 }
 
-func (db *UserRepository) CreateAccount(chatId int) error {
+func (db *UserRepositoryGorm) CreateAccount(chatId int) error {
 
 	account := model.Account{ID: chatId}
 
@@ -26,7 +26,7 @@ func (db *UserRepository) CreateAccount(chatId int) error {
 	return nil
 }
 
-func (db *UserRepository) SetName(a *model.Account, name string) error {
+func (db *UserRepositoryGorm) SetName(a *model.Account, name string) error {
 
 	a.Name = name
 
@@ -39,7 +39,7 @@ func (db *UserRepository) SetName(a *model.Account, name string) error {
 	return nil
 }
 
-func (db *UserRepository) SetMoneyGoal(a *model.Account, moneyGoal int) error {
+func (db *UserRepositoryGorm) SetMoneyGoal(a *model.Account, moneyGoal int) error {
 
 	a.MoneyGoal = moneyGoal
 
@@ -52,7 +52,7 @@ func (db *UserRepository) SetMoneyGoal(a *model.Account, moneyGoal int) error {
 	return nil
 }
 
-func (db *UserRepository) SetStartSum(a *model.Account, startsum int) error {
+func (db *UserRepositoryGorm) SetStartSum(a *model.Account, startsum int) error {
 
 	a.Startsum = startsum
 
@@ -65,7 +65,7 @@ func (db *UserRepository) SetStartSum(a *model.Account, startsum int) error {
 	return nil
 }
 
-func (db *UserRepository) GetAccountBySessionID(chatId int) (*model.Account, error) {
+func (db *UserRepositoryGorm) GetAccountBySessionID(chatId int) (*model.Account, error) {
 
 	account := model.Account{ID: chatId}
 

@@ -1,30 +1,11 @@
-package service
+package stateMachine
 
 import (
 	"github.com/nvtarhanov/TelegramMoneyKeeper/service/command"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/service/message"
 )
 
-const (
-	WaitForCommand state = iota
-	WaitForGoal
-	WaitForSum
-	WaitForName
-	WaitForSalary
-	WaitForOutcome
-	WaitForTransaction
-
-	WaitForRegistration
-	WaitForGoalRegistration
-	WaitForSumRegistration
-	WaitForNameRegistration
-	WaitForSalaryRegistration
-	WaitForOutcomeRegistration
-)
-
-type state int
-
-func ProcessCommand(inState state, inCommand string) (string, state) {
+func ProcessCommand(inState State, inCommand string) (string, State) {
 
 	outputeMessage := ""
 	outputState := WaitForCommand

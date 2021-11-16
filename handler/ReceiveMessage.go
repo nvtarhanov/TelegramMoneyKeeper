@@ -1,13 +1,4 @@
-package controller
-
-import (
-	"fmt"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
-	"github.com/nvtarhanov/TelegramMoneyKeeper/service"
-	"github.com/spf13/viper"
-)
+package handler
 
 type ReceiveMessage struct {
 	UpdateID    int         `json:"update_id"`
@@ -51,34 +42,4 @@ type Entities struct {
 	Type   string `json:"type"`
 	Offset int    `json:"offset"`
 	Length int    `json:"length"`
-}
-
-type TelegramController struct {
-	UserService service.UserService
-}
-
-func (tg *TelegramController) Handle(c *gin.Context) {
-
-	var message ReceiveMessage
-
-	if err := c.ShouldBindJSON(&message); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	chatID := message.Message.Chat.ID
-	msgText := message.Message.Text
-
-	fmt.Println(chatID, msgText, viper.GetInt("port"))
-
-	// if err := businesslogick.SwitchCommand(chatID, msgText); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
-
-	var messenger Messenger = TelegrammMessenger{}
-	messageText := ""
-
-	messenger.SendMessage(chatID, messageText)
-
 }

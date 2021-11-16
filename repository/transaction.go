@@ -5,15 +5,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type TransactionRepository struct {
+type TransactionRepositoryGorm struct {
 	*gorm.DB
 }
 
-func NewTransactionRepository(db *gorm.DB) *TransactionRepository {
-	return &TransactionRepository{db}
+func NewTransactionRepository(db *gorm.DB) *TransactionRepositoryGorm {
+	return &TransactionRepositoryGorm{db}
 }
 
-func (tr *TransactionRepository) CreateTransaction(account *model.Account, value int) error {
+func (tr *TransactionRepositoryGorm) CreateTransaction(account *model.Account, value int) error {
 
 	transaction := model.Transaction{AccountID: account.ID, Value: value}
 
