@@ -31,8 +31,10 @@ func main() {
 
 	//Inject dependency
 	repository := repository.NewRepository(db)
-	service := service.NewService(repository)
+	service := service.NewCommandServiceHandler(*repository)
 	handler := handler.NewTelegramHandler(service)
+	//service := service.NewService(repository)
+	//handler := handler.NewTelegramHandler(service)
 
 	//3.Setup webhook
 	data := url.Values{

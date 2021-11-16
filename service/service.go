@@ -1,7 +1,5 @@
 package service
 
-import "github.com/nvtarhanov/TelegramMoneyKeeper/repository"
-
 type CommandService interface {
 	RegisterAccount(chatID int) string
 	SetNameByID(chatID int, data string) string
@@ -12,12 +10,4 @@ type CommandService interface {
 	SetSalaryPerMonth()
 	SetOutcomePerMonth()
 	GetCalculatedData()
-}
-
-type Service struct {
-	CommandService
-}
-
-func NewService(repo *repository.Repository) *Service {
-	return &Service{}
 }

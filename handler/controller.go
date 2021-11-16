@@ -11,10 +11,10 @@ import (
 )
 
 type TelegramHandeler struct {
-	service *service.Service
+	service service.CommandService
 }
 
-func NewTelegramHandler(service *service.Service) *TelegramHandeler {
+func NewTelegramHandler(service service.CommandService) *TelegramHandeler {
 	return &TelegramHandeler{service: service}
 }
 

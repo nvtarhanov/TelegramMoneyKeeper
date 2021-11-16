@@ -7,10 +7,15 @@ import (
 )
 
 type CommandServiceHandler struct {
-	AccountRepository      repository.AccountRepository
-	SalaryRecordRepository repository.SalaryRecordRepository
-	TransactionRepository  repository.TransactionRepository
-	StateRepository        repository.StateRepository
+	// 	AccountRepository      repository.AccountRepository
+	// 	SalaryRecordRepository repository.SalaryRecordRepository
+	// 	TransactionRepository  repository.TransactionRepository
+	// 	StateRepository        repository.StateRepository
+	repository.Repository
+}
+
+func NewCommandServiceHandler(repo repository.Repository) *CommandServiceHandler {
+	return &CommandServiceHandler{repo}
 }
 
 func (cs *CommandServiceHandler) RegisterAccount(chatID int) string {
@@ -86,21 +91,21 @@ func (cs *CommandServiceHandler) SetStartSumByID(chatID int, data string) string
 
 }
 
-func UpdateState() {
+func (cs *CommandServiceHandler) UpdateState() {
 
 }
 
-func GetState() {
+func (cs *CommandServiceHandler) GetState() {
 
 }
 
-func SetSalaryPerMonth() {
+func (cs *CommandServiceHandler) SetSalaryPerMonth() {
 
 }
-func SetOutcomePerMonth() {
+func (cs *CommandServiceHandler) SetOutcomePerMonth() {
 
 }
 
-func GetCalculatedData() {
+func (cs *CommandServiceHandler) GetCalculatedData() {
 
 }
