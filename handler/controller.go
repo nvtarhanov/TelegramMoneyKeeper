@@ -12,11 +12,12 @@ import (
 )
 
 type TelegramHandeler struct {
-	service service.CommandService
+	service          service.CommandService
+	transportService service.TransportService
 }
 
-func NewTelegramHandler(service service.CommandService) *TelegramHandeler {
-	return &TelegramHandeler{service: service}
+func NewTelegramHandler(service service.CommandService, transportService service.TransportService) *TelegramHandeler {
+	return &TelegramHandeler{service: service, transportService: transportService}
 }
 
 func (tg *TelegramHandeler) Handle(c *gin.Context) {

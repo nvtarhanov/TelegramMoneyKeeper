@@ -15,6 +15,7 @@ func ProcessCommand(inState State, inCommand string) (string, State) {
 		switch inCommand {
 		case command.CommandStart:
 			//Account registration
+
 		case command.CommandSetGoal:
 			outputeMessage = message.WaitForGoal
 			outputState = WaitForGoal
