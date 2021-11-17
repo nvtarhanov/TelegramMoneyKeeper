@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/service"
-	"github.com/nvtarhanov/TelegramMoneyKeeper/service/stateMachine"
+	state "github.com/nvtarhanov/TelegramMoneyKeeper/service/stateMachine"
 	"github.com/spf13/viper"
 )
 
@@ -32,7 +32,7 @@ func (tg *TelegramHandeler) Handle(c *gin.Context) {
 	chatID := message.Message.Chat.ID
 	msgText := message.Message.Text
 
-	messageReceive, state := stateMachine.ProcessCommand(stateMachine.WaitForCommand, msgText)
+	messageReceive, state := tg.service.ProcessCommand(state.WaitForCommand, msgText)
 
 	if messageReceive != "" {
 		sendMessage(chatID, messageReceive)

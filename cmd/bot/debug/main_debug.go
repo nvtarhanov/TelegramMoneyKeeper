@@ -10,8 +10,16 @@ import (
 	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/database"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/repository"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/service"
-	"github.com/nvtarhanov/TelegramMoneyKeeper/service/stateMachine"
 )
+
+type CommandHandeler struct {
+	service          service.CommandService
+	transportService service.TransportService
+}
+
+func NewCommandHandeler(service service.CommandService, transportService service.TransportService) *CommandHandeler {
+	return &CommandHandeler{service: service, transportService: transportService}
+}
 
 func main() {
 
@@ -29,15 +37,22 @@ func main() {
 	}
 
 	//Inject dependency
+	transportRepository := repository.NewTransportRepository(db)
 	repository := repository.NewRepository(db)
+
+	transportService := service.NewTransportServiceHandler(transportRepository)
 	service := service.NewCommandServiceHandler(*repository)
+
+	commandHandeler := NewCommandHandeler(service, transportService)
 
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print("Enter message: ")
 		text, _ := reader.ReadString('\n')
 
-		message, state := stateMachine.ProcessCommand(stateMachine.WaitForCommand, text)
+		state := commandHandeler.transportService.GetState()
+
+		message, state := commandHandeler.service.ProcessCommand(state.WaitForCommand, text)
 
 		fmt.Println(message, state)
 

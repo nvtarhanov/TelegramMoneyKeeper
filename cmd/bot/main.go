@@ -2,10 +2,13 @@ package main
 
 import (
 	"log"
+	"net/http"
+	"net/url"
 
 	"github.com/nvtarhanov/TelegramMoneyKeeper/handler"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/config"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/database"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/router"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/repository"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/service"
 )
@@ -30,24 +33,24 @@ func main() {
 	transportRepository := repository.NewTransportRepository(db)
 	repository := repository.NewRepository(db)
 
-	//transportRepository := repository.NewTransportRepository(db)
+	serviceTransport := service.NewTransportServiceHandler(transportRepository)
 	service := service.NewCommandServiceHandler(*repository)
-	telegramTramsportService := service.NewTransportServiceHandler(transportRepository)
-	handler := handler.NewTelegramHandler(service, transportRepository)
+
+	handler := handler.NewTelegramHandler(service, serviceTransport)
 
 	//3.Setup webhook
-	// data := url.Values{
-	// 	"url": {cfg.Ngrok_url + "/api/v1/update"},
-	// }
-	// _, err = http.PostForm(cfg.Telegram_url+cfg.Telegram_token+"/setWebhook", data)
+	data := url.Values{
+		"url": {cfg.Ngrok_url + "/api/v1/update"},
+	}
+	_, err = http.PostForm(cfg.Telegram_url+cfg.Telegram_token+"/setWebhook", data)
 
-	// if err != nil {
-	// 	log.Fatal("Unable to setup webhook")
-	// }
+	if err != nil {
+		log.Fatal("Unable to setup webhook")
+	}
 
-	// //4.Start router
-	// r := router.Init(handler)
+	//4.Start router
+	r := router.Init(handler)
 
-	// r.Run(":" + cfg.Port)
+	r.Run(":" + cfg.Port)
 
 }

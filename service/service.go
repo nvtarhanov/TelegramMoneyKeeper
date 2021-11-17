@@ -10,9 +10,10 @@ type CommandService interface {
 	SetSalaryPerMonth()
 	SetOutcomePerMonth()
 	GetCalculatedData()
+	ProcessCommand(inState int, inCommand string) (string, int)
 }
 
 type TransportService interface {
-	GetState()
-	UpdateState()
+	GetState(int, int) (int, error)
+	UpdateState(int) error
 }

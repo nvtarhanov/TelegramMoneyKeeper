@@ -1,7 +1,7 @@
-package stateMachine
+package state
 
 const (
-	WaitForCommand State = iota
+	WaitForCommand int = iota
 	WaitForGoal
 	WaitForSum
 	WaitForName
@@ -16,5 +16,3 @@ const (
 	WaitForSalaryRegistration
 	WaitForOutcomeRegistration
 )
-
-type State int
