@@ -87,14 +87,6 @@ func (cs *CommandServiceHandler) SetStartSumByID(chatID int, data string) string
 
 }
 
-func (cs *CommandServiceHandler) UpdateState() {
-
-}
-
-func (cs *CommandServiceHandler) GetState() {
-
-}
-
 func (cs *CommandServiceHandler) SetSalaryPerMonth() {
 
 }
