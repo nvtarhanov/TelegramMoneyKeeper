@@ -6,6 +6,12 @@ build:
 run: build
 	./.bin/bot	
 
+builddebug:
+	go build -o ./.bin/bot_debug cmd/bot/debug/main_debug.go
+
+rundebug: builddebug
+		./.bin/bot_debug	
+
 createdb:
 	winpty docker exec -it postgres12 createdb --username=root --owner=root telegramdb	
 

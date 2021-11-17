@@ -7,10 +7,6 @@ import (
 )
 
 type CommandServiceHandler struct {
-	// 	AccountRepository      repository.AccountRepository
-	// 	SalaryRecordRepository repository.SalaryRecordRepository
-	// 	TransactionRepository  repository.TransactionRepository
-	// 	StateRepository        repository.StateRepository
 	repository.Repository
 }
 

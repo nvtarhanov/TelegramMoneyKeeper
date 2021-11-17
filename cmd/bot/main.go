@@ -33,8 +33,6 @@ func main() {
 	repository := repository.NewRepository(db)
 	service := service.NewCommandServiceHandler(*repository)
 	handler := handler.NewTelegramHandler(service)
-	//service := service.NewService(repository)
-	//handler := handler.NewTelegramHandler(service)
 
 	//3.Setup webhook
 	data := url.Values{

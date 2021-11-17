@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/service"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/service/stateMachine"
 	"github.com/spf13/viper"
 )
 
@@ -30,7 +31,13 @@ func (tg *TelegramHandeler) Handle(c *gin.Context) {
 	chatID := message.Message.Chat.ID
 	msgText := message.Message.Text
 
-	fmt.Println(chatID, msgText, viper.GetInt("port"))
+	messageReceive, state := stateMachine.ProcessCommand(stateMachine.WaitForCommand, msgText)
+
+	if messageReceive != "" {
+		sendMessage(chatID, messageReceive)
+	}
+
+	fmt.Println(chatID, msgText, viper.GetInt("port"), state)
 
 	// if err := businesslogick.SwitchCommand(chatID, msgText); err != nil {
 	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -44,7 +51,7 @@ func (tg *TelegramHandeler) Handle(c *gin.Context) {
 }
 
 //Send message - msgText into tg chat with id - chatID
-func (TelegramHandeler) SendMessage(chatID int, msgText string) {
+func sendMessage(chatID int, msgText string) {
 	message := fmt.Sprintf("%s%s/sendMessage?chat_id=%d&text= %s", viper.GetString("telegram_url"), viper.GetString("telegram_token"), chatID, msgText)
 
 	if _, err := http.Get(message); err != nil {

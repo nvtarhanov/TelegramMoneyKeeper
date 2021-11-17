@@ -20,12 +20,6 @@ type SalaryRecordRepository interface {
 	GetEntrieByAccountID(ChatID int) (*model.Entrie, error)
 }
 
-type StateRepository interface {
-	GetCurrentStateByID(chatID int) (int, error)
-	WriteState(chatID int, state int) error
-	UpdateState(chatID int, state int) error
-}
-
 type TransactionRepository interface {
 	CreateTransaction(account *model.Account, value int) error
 }
@@ -33,7 +27,7 @@ type TransactionRepository interface {
 type Repository struct {
 	AccountRepository
 	SalaryRecordRepository
-	StateRepository
+	//StateRepository
 	TransactionRepository
 }
 
@@ -41,7 +35,21 @@ func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
 		AccountRepository:      NewUserRepository(db),
 		SalaryRecordRepository: NewEntrieRepository(db),
-		StateRepository:        NewStateRepository(db),
-		TransactionRepository:  NewTransactionRepository(db),
+		//StateRepository:        NewStateRepository(db),
+		TransactionRepository: NewTransactionRepository(db),
 	}
+}
+
+type StateRepository interface {
+	GetCurrentStateByID(chatID int) (int, error)
+	WriteState(chatID int, state int) error
+	UpdateState(chatID int, state int) error
+}
+
+type TransportRepository struct {
+	StateRepository
+}
+
+func NewTransportRepository(db *gorm.DB) *TransportRepository {
+	return &TransportRepository{NewStateRepository(db)}
 }
