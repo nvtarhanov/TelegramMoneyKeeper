@@ -1,7 +1,7 @@
 package state
 
 const (
-	WaitForCommand int = iota
+	WaitForCommand int = iota + 1
 	WaitForGoal
 	WaitForSum
 	WaitForName

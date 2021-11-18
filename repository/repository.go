@@ -27,7 +27,6 @@ type TransactionRepository interface {
 type Repository struct {
 	AccountRepository
 	SalaryRecordRepository
-	//StateRepository
 	TransactionRepository
 }
 
@@ -35,8 +34,7 @@ func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
 		AccountRepository:      NewUserRepository(db),
 		SalaryRecordRepository: NewEntrieRepository(db),
-		//StateRepository:        NewStateRepository(db),
-		TransactionRepository: NewTransactionRepository(db),
+		TransactionRepository:  NewTransactionRepository(db),
 	}
 }
 

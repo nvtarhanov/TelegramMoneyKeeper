@@ -14,6 +14,6 @@ type CommandService interface {
 }
 
 type TransportService interface {
-	GetState(int, int) (int, error)
-	UpdateState(int) error
+	GetState(int) (int, error)
+	UpdateState(int, int) error
 }

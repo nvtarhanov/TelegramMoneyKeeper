@@ -21,6 +21,10 @@ func NewCommandHandeler(service service.CommandService, transportService service
 	return &CommandHandeler{service: service, transportService: transportService}
 }
 
+const (
+	chatID int = 123456
+)
+
 func main() {
 
 	cfg, error := config.NewConfig()
@@ -48,13 +52,21 @@ func main() {
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print("Enter message: ")
-		text, _ := reader.ReadString('\n')
+		msgText, _ := reader.ReadString('\n')
 
-		state := commandHandeler.transportService.GetState()
+		state, err := commandHandeler.transportService.GetState(chatID)
 
-		message, state := commandHandeler.service.ProcessCommand(state.WaitForCommand, text)
+		log.Printf("Current state is %v message is %v", state, msgText)
 
-		fmt.Println(message, state)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		message, state := commandHandeler.service.ProcessCommand(state, msgText)
+
+		log.Printf("State after is %v message to user is %v", state, message)
+
+		//log.Print(message, state)
 
 	}
 
