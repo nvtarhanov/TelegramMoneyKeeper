@@ -49,8 +49,8 @@ func (er *EntrieRepositoryGorm) SetOutcomePerMonth(entrie *model.Entrie, value i
 func (er *EntrieRepositoryGorm) GetEntrieByAccountID(ChatID int) (*model.Entrie, error) {
 
 	entrie := model.Entrie{AccountID: ChatID}
-
-	if err := er.First(&entrie, "account_id = ?", entrie.AccountID).Error; err != nil {
+	//Get last by id Salary entrie
+	if err := er.Last(&entrie, "account_id = ?", entrie.AccountID).Error; err != nil {
 		return &entrie, err
 	}
 

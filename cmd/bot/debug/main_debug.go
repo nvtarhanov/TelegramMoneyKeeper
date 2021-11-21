@@ -56,8 +56,6 @@ func main() {
 
 		state, err := transportService.GetState(userID)
 
-		//log.Printf("Current state is %v message is %v", state, msgText)
-
 		if err != nil {
 			log.Print(err)
 		}

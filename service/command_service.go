@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/nvtarhanov/TelegramMoneyKeeper/model"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/repository"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/service/command"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/service/message"
@@ -312,13 +313,35 @@ func (cs *CommandServiceHandler) GetCalculatedData(chatID int) string {
 		return "You should set up your salary, type /setsalary"
 	}
 
+	//get sum of all transactions if they exist
 	transactionSum, err := cs.TransactionRepository.GetTransactionSum(chatID)
 
 	if err != nil {
 		return "Cant calculate money transactions"
 	}
 
-	calculation := fmt.Sprintf("Sum of transactions is %v", transactionSum)
+	return createMessageToUser(*account, *salaryRecord, transactionSum)
+}
 
-	return calculation
+func createMessageToUser(account model.Account, salaryRecord model.Entrie, transactionSum int) string {
+
+	messageToUser := fmt.Sprintf("Your start sum is: %v \n"+
+		"Money goal is: %v \n "+
+		"Salary is: %v \n "+
+		"Outcome per month is: %v \n"+
+		"Sum of transactions is: %v \n",
+		account.Startsum, account.MoneyGoal, salaryRecord.SalaryPerMonth, salaryRecord.OutcomePerMonth, transactionSum)
+
+	actualMoneyGoal := (account.MoneyGoal - account.Startsum) + transactionSum
+
+	if actualMoneyGoal < 0 {
+		messageToUser = messageToUser + fmt.Sprintf("You already get yor goal and have %v free money", actualMoneyGoal*-1)
+	} else {
+		freeMoneyPerMonth := salaryRecord.SalaryPerMonth - salaryRecord.OutcomePerMonth
+		monthToGetGoal := float64(actualMoneyGoal) / float64(freeMoneyPerMonth)
+
+		messageToUser = messageToUser + fmt.Sprintf("You need %v month to get your goal", monthToGetGoal)
+	}
+
+	return messageToUser
 }

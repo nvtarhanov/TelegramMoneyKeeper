@@ -1,5 +1,7 @@
 package repository
 
+//Better to switch on https://github.com/hashicorp/go-memdb
+
 import (
 	"github.com/nvtarhanov/TelegramMoneyKeeper/model"
 	"gorm.io/gorm"
