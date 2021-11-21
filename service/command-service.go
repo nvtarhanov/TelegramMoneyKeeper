@@ -325,9 +325,9 @@ func (cs *CommandServiceHandler) GetCalculatedData(chatID int) string {
 
 func createMessageToUser(account model.Account, salaryRecord model.Entrie, transactionSum int) string {
 
-	messageToUser := fmt.Sprintf("Your start sum is: %v \n"+
-		"Money goal is: %v \n "+
-		"Salary is: %v \n "+
+	messageToUser := fmt.Sprintf("\nYour start sum is: %v \n"+
+		"Money goal is: %v \n"+
+		"Salary is: %v \n"+
 		"Outcome per month is: %v \n"+
 		"Sum of transactions is: %v \n",
 		account.Startsum, account.MoneyGoal, salaryRecord.SalaryPerMonth, salaryRecord.OutcomePerMonth, transactionSum)
