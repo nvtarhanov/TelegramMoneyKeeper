@@ -23,3 +23,16 @@ func (tr *TransactionRepositoryGorm) CreateTransaction(account *model.Account, v
 
 	return nil
 }
+
+type resultSum struct {
+	Total int
+}
+
+func (tr *TransactionRepositoryGorm) GetTransactionSum(chatID int) (int, error) {
+
+	resultSum := resultSum{0}
+
+	tr.Model(&model.Transaction{}).Select("sum(value) as Total").Where("account_id = ?", chatID).Find(&resultSum)
+
+	return resultSum.Total, nil
+}

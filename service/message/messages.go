@@ -9,7 +9,12 @@ const (
 	WaitForTransaction string = "Enter money transaction"
 
 	RegistrationCompleted string = "Registration completed!"
-	// WaitForGoal string = "Enter money goal"
-	// WaitForGoal string = "Enter money goal"
-	UregisteredCommand string = "Unregistered command, type /help for help"
+	UregisteredCommand    string = "Unregistered command, type /help for help"
+
+	SalarySetted      string = "Salary has been setted"
+	GoalSetted        string = "Goal has been setted"
+	SumSetted         string = "Sum has been setted"
+	NameSetted        string = "Name has been setted"
+	OutocmeSetted     string = "Outocme has been setted"
+	TransactionSetted string = "Transactio has been setted"
 )

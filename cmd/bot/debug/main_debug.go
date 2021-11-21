@@ -56,7 +56,7 @@ func main() {
 
 		state, err := transportService.GetState(userID)
 
-		log.Printf("Current state is %v message is %v", state, msgText)
+		//log.Printf("Current state is %v message is %v", state, msgText)
 
 		if err != nil {
 			log.Print(err)
@@ -70,7 +70,7 @@ func main() {
 			log.Print(err)
 		}
 
-		log.Printf("State after is %v message to user is %v", state, message)
+		log.Printf("message: %v", message)
 
 	}
 

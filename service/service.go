@@ -8,6 +8,8 @@ type CommandService interface {
 	SetSalaryPerMonth(chatID int, data string) string
 	SetOutcomePerMonth(chatID int, data string) string
 	GetCalculatedData(chatID int) string
+	SetTransaction(chatID int, data string) string
+
 	ProcessCommand(inState int, inCommand string, userID int) (string, int)
 }
 

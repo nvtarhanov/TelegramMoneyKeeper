@@ -22,6 +22,7 @@ type SalaryRecordRepository interface {
 
 type TransactionRepository interface {
 	CreateTransaction(account *model.Account, value int) error
+	GetTransactionSum(ChatID int) (int, error)
 }
 
 type Repository struct {

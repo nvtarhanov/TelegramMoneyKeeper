@@ -1,7 +1,7 @@
 package service
 
 import (
-	"log"
+	"fmt"
 	"strconv"
 
 	"github.com/nvtarhanov/TelegramMoneyKeeper/repository"
@@ -24,7 +24,7 @@ func (cs *CommandServiceHandler) ProcessCommand(inState int, inCommand string, u
 	outputState := state.WaitForCommand
 	errorMessage := ""
 
-	log.Printf("state %v inCommand %v userID %v", inState, inCommand, userID)
+	//log.Printf("state %v inCommand %v userID %v", inState, inCommand, userID)
 
 	if command.IsCommand(inCommand) {
 		// If inCommand is a command we need to return a new state and message for state commands or return data for GET(stateless commands)
@@ -60,6 +60,7 @@ func (cs *CommandServiceHandler) ProcessCommand(inState int, inCommand string, u
 			outputState = state.WaitForCommand
 		case command.CommandGetCalculation:
 			//return money calculation
+			outputeMessage = cs.GetCalculatedData(userID)
 			outputState = state.WaitForCommand
 		}
 
@@ -75,21 +76,33 @@ func (cs *CommandServiceHandler) ProcessCommand(inState int, inCommand string, u
 			outputState = state.WaitForCommand
 		case state.WaitForGoal:
 			//Set Goal
+			errorMessage = cs.SetMoneyGoalByID(userID, inCommand)
+			outputeMessage = message.GoalSetted
 			outputState = state.WaitForCommand
 		case state.WaitForSum:
 			//Set Sum
+			errorMessage = cs.SetStartSumByID(userID, inCommand)
+			outputeMessage = message.SumSetted
 			outputState = state.WaitForCommand
 		case state.WaitForName:
 			//Set Name
+			errorMessage = cs.SetNameByID(userID, inCommand)
+			outputeMessage = message.NameSetted
 			outputState = state.WaitForCommand
 		case state.WaitForSalary:
 			//Set Salary
+			errorMessage = cs.SetSalaryPerMonth(userID, inCommand)
+			outputeMessage = message.SalarySetted
 			outputState = state.WaitForCommand
 		case state.WaitForOutcome:
 			//Set Outcome
+			errorMessage = cs.SetOutcomePerMonth(userID, inCommand)
+			outputeMessage = message.OutocmeSetted
 			outputState = state.WaitForCommand
 		case state.WaitForTransaction:
 			//Set Transaction
+			errorMessage = cs.SetTransaction(userID, inCommand)
+			outputeMessage = message.TransactionSetted
 			outputState = state.WaitForCommand
 		//Commands for registration
 		case state.WaitForNameRegistration:
@@ -274,5 +287,38 @@ func (cs *CommandServiceHandler) SetTransaction(chatID int, sum string) string {
 
 func (cs *CommandServiceHandler) GetCalculatedData(chatID int) string {
 
-	return "Here is yours calculation"
+	//get account data for calculation
+	account, err := cs.AccountRepository.GetAccountBySessionID(chatID)
+	if err != nil {
+		return "Cannot find account by id"
+	}
+
+	if account.MoneyGoal == 0 {
+		return "You should set up your money goal, type /setmoneygoal"
+	}
+
+	if account.Startsum == 0 {
+		return "You should set up your Startsum, type /setstartsum"
+	}
+
+	//get salary data for calculation
+	salaryRecord, err := cs.SalaryRecordRepository.GetEntrieByAccountID(chatID)
+
+	if err != nil {
+		return "Cant find salary record"
+	}
+
+	if salaryRecord.OutcomePerMonth == 0 {
+		return "You should set up your salary, type /setsalary"
+	}
+
+	transactionSum, err := cs.TransactionRepository.GetTransactionSum(chatID)
+
+	if err != nil {
+		return "Cant calculate money transactions"
+	}
+
+	calculation := fmt.Sprintf("Sum of transactions is %v", transactionSum)
+
+	return calculation
 }
