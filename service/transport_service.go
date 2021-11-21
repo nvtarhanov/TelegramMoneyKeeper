@@ -20,6 +20,10 @@ func (ts *TransportServiceHandler) UpdateState(chatID int, state int) error {
 
 	err := ts.StateRepository.UpdateState(chatID, state)
 
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		err = ts.StateRepository.WriteState(chatID, state)
+	}
+
 	if err != nil {
 		return err
 	}
@@ -31,10 +35,12 @@ func (ts *TransportServiceHandler) GetState(chatID int) (int, error) {
 
 	currentState, err := ts.StateRepository.GetCurrentStateByID(chatID)
 
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		ts.StateRepository.WriteState(chatID, state.WaitForRegistration)
-	} else {
-		return state.WaitForCommand, err
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		return state.WaitForRegistration, nil
+	}
+
+	if err != nil {
+		return state.Error, err
 	}
 
 	return currentState, nil

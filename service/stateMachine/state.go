@@ -15,4 +15,5 @@ const (
 	WaitForNameRegistration
 	WaitForSalaryRegistration
 	WaitForOutcomeRegistration
+	Error
 )

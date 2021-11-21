@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"log"
+
 	"github.com/nvtarhanov/TelegramMoneyKeeper/model"
 	"gorm.io/gorm"
 )
@@ -20,6 +22,7 @@ func (db *UserRepositoryGorm) CreateAccount(chatId int) error {
 	result := db.Create(&account)
 
 	if result.Error != nil {
+		log.Print(result.Error)
 		return result.Error
 	}
 
@@ -33,6 +36,7 @@ func (db *UserRepositoryGorm) SetName(a *model.Account, name string) error {
 	result := db.Save(&a)
 
 	if result.Error != nil {
+		log.Print(result.Error)
 		return result.Error
 	}
 
@@ -46,6 +50,7 @@ func (db *UserRepositoryGorm) SetMoneyGoal(a *model.Account, moneyGoal int) erro
 	result := db.Save(&a)
 
 	if result.Error != nil {
+		log.Print(result.Error)
 		return result.Error
 	}
 
@@ -59,6 +64,7 @@ func (db *UserRepositoryGorm) SetStartSum(a *model.Account, startsum int) error 
 	result := db.Save(&a)
 
 	if result.Error != nil {
+		log.Print(result.Error)
 		return result.Error
 	}
 
@@ -72,6 +78,7 @@ func (db *UserRepositoryGorm) GetAccountBySessionID(chatId int) (*model.Account,
 	result := db.First(&account, "id = ?", account.ID)
 
 	if result.Error != nil {
+		log.Print(result.Error)
 		return &account, result.Error
 	}
 

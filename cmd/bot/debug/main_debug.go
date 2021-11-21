@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/config"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/database"
@@ -21,11 +22,9 @@ func NewCommandHandeler(service service.CommandService, transportService service
 	return &CommandHandeler{service: service, transportService: transportService}
 }
 
-const (
-	chatID int = 123456
-)
-
 func main() {
+
+	userID := 123456
 
 	cfg, error := config.NewConfig()
 
@@ -47,26 +46,31 @@ func main() {
 	transportService := service.NewTransportServiceHandler(transportRepository)
 	service := service.NewCommandServiceHandler(*repository)
 
-	commandHandeler := NewCommandHandeler(service, transportService)
+	//commandHandeler := NewCommandHandeler(service, transportService)
 
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print("Enter message: ")
 		msgText, _ := reader.ReadString('\n')
+		msgText = strings.TrimRight(msgText, "\r\n")
 
-		state, err := commandHandeler.transportService.GetState(chatID)
+		state, err := transportService.GetState(userID)
 
 		log.Printf("Current state is %v message is %v", state, msgText)
 
 		if err != nil {
-			log.Fatal(err)
+			log.Print(err)
 		}
 
-		message, state := commandHandeler.service.ProcessCommand(state, msgText)
+		message, state := service.ProcessCommand(state, msgText, userID)
+
+		err = transportService.UpdateState(userID, state)
+
+		if err != nil {
+			log.Print(err)
+		}
 
 		log.Printf("State after is %v message to user is %v", state, message)
-
-		//log.Print(message, state)
 
 	}
 

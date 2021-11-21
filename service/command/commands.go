@@ -37,9 +37,7 @@ func CommandsList() []string {
 
 func IsCommand(command string) bool {
 
-	commandList := CommandsList()
-
-	for _, com := range commandList {
+	for _, com := range CommandsList() {
 		if command == com {
 			return true
 		}

@@ -32,7 +32,7 @@ func (tg *TelegramHandeler) Handle(c *gin.Context) {
 	chatID := message.Message.Chat.ID
 	msgText := message.Message.Text
 
-	messageReceive, state := tg.service.ProcessCommand(state.WaitForCommand, msgText)
+	messageReceive, state := tg.service.ProcessCommand(state.WaitForCommand, msgText, chatID)
 
 	if messageReceive != "" {
 		sendMessage(chatID, messageReceive)
@@ -56,6 +56,6 @@ func sendMessage(chatID int, msgText string) {
 	message := fmt.Sprintf("%s%s/sendMessage?chat_id=%d&text= %s", viper.GetString("telegram_url"), viper.GetString("telegram_token"), chatID, msgText)
 
 	if _, err := http.Get(message); err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 }

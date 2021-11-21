@@ -5,12 +5,10 @@ type CommandService interface {
 	SetNameByID(chatID int, data string) string
 	SetMoneyGoalByID(chatID int, data string) string
 	SetStartSumByID(chatID int, data string) string
-	// UpdateState()
-	// GetState()
-	SetSalaryPerMonth()
-	SetOutcomePerMonth()
-	GetCalculatedData()
-	ProcessCommand(inState int, inCommand string) (string, int)
+	SetSalaryPerMonth(chatID int, data string) string
+	SetOutcomePerMonth(chatID int, data string) string
+	GetCalculatedData(chatID int) string
+	ProcessCommand(inState int, inCommand string, userID int) (string, int)
 }
 
 type TransportService interface {

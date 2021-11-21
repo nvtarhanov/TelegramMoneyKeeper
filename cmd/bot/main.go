@@ -49,8 +49,8 @@ func main() {
 	}
 
 	//4.Start router
-	r := router.Init(handler)
+	router := router.Init(handler)
 
-	r.Run(":" + cfg.Port)
+	router.Run(":" + cfg.Port)
 
 }
