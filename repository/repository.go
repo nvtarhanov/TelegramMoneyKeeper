@@ -5,6 +5,8 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockgen -source=repository.go -destination=mocks/repository-mock.go
+
 type AccountRepository interface {
 	CreateAccount(chatId int) error
 	SetName(a *model.Account, name string) error

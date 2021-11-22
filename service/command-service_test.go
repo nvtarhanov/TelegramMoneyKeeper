@@ -1,7 +1,7 @@
 package service
 
-import "testing"
+// func TestRegisterAccount(t *testing.T) {
 
-func TestRegisterAccount(t *testing.T) {
+// 	testCommandServiceHandler := NewCommandServiceHandler(nil)
 
-}
+// }

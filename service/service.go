@@ -1,5 +1,7 @@
 package service
 
+//go:generate mockgen -source=service.go -destination=mocks/service-mock.go
+
 type CommandService interface {
 	RegisterAccount(chatID int) string
 	SetNameByID(chatID int, data string) string

@@ -25,8 +25,6 @@ func (cs *CommandServiceHandler) ProcessCommand(inState int, inCommand string, u
 	outputState := state.WaitForCommand
 	errorMessage := ""
 
-	//log.Printf("state %v inCommand %v userID %v", inState, inCommand, userID)
-
 	if command.IsCommand(inCommand) {
 		// If inCommand is a command we need to return a new state and message for state commands or return data for GET(stateless commands)
 		switch inCommand {
@@ -325,11 +323,11 @@ func (cs *CommandServiceHandler) GetCalculatedData(chatID int) string {
 
 func createMessageToUser(account model.Account, salaryRecord model.Entrie, transactionSum int) string {
 
-	messageToUser := fmt.Sprintf("\nYour start sum is: %v \n"+
-		"Money goal is: %v \n"+
-		"Salary is: %v \n"+
-		"Outcome per month is: %v \n"+
-		"Sum of transactions is: %v \n",
+	messageToUser := fmt.Sprintf("Your start sum is: %v "+
+		"Money goal is: %v "+
+		"Salary is: %v "+
+		"Outcome per month is: %v "+
+		"Sum of transactions is: %v ",
 		account.Startsum, account.MoneyGoal, salaryRecord.SalaryPerMonth, salaryRecord.OutcomePerMonth, transactionSum)
 
 	actualMoneyGoal := (account.MoneyGoal - account.Startsum) + transactionSum
