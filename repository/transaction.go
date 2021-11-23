@@ -32,7 +32,11 @@ func (tr *TransactionRepositoryGorm) GetTransactionSum(chatID int) (int, error) 
 
 	resultSum := resultSum{0}
 
-	tr.Model(&model.Transaction{}).Select("sum(value) as Total").Where("account_id = ?", chatID).Find(&resultSum)
+	result := tr.Model(&model.Transaction{}).Select("sum(value) as Total").Where("account_id = ?", chatID).Find(&resultSum)
+
+	if result.Error != nil {
+		return 0, result.Error
+	}
 
 	return resultSum.Total, nil
 }
