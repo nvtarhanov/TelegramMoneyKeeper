@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"database/sql/driver"
 	"errors"
+	"fmt"
 	"regexp"
 	"testing"
 	"time"
@@ -23,7 +24,7 @@ type Suite struct {
 	mock sqlmock.Sqlmock
 
 	transactionRepository TransactionRepository
-	//transaction           *model.Transaction
+	StateRepository       StateRepository
 }
 
 func (s *Suite) SetupSuite() {
@@ -46,6 +47,7 @@ func (s *Suite) SetupSuite() {
 	require.NoError(s.T(), err)
 
 	s.transactionRepository = NewTransactionRepository(s.DB)
+	s.StateRepository = NewStateRepository(s.DB)
 }
 
 func TestInit(t *testing.T) {
@@ -103,5 +105,38 @@ func (s *Suite) Test_TransactionRepository_CreateTransactionError() {
 	err := s.transactionRepository.CreateTransaction(account, testData.value)
 
 	assert.Error(s.T(), err)
+
+}
+
+func (s *Suite) Test_TransactionRepository_GetTransactionSum() {
+
+	testData := testData{accountID: 123456, value: 5500}
+
+	query := regexp.QuoteMeta(`SELECT sum(value) as Total FROM "transactions" WHERE account_id = $1`)
+
+	rows := s.mock.NewRows([]string{"account_id", "value"}).AddRow(123456, 2500)
+
+	s.mock.ExpectQuery(query).WithArgs(testData.accountID).WillReturnRows(rows)
+
+	sum, err := s.transactionRepository.GetTransactionSum(testData.accountID)
+
+	fmt.Println(sum)
+
+	assert.NotNil(s.T(), sum)
+	assert.NoError(s.T(), err)
+}
+
+func (s *Suite) Test_TransactionRepository_GetTransactionSumError() {
+
+	testData := testData{accountID: 123456, value: 5500}
+
+	query := regexp.QuoteMeta(`SELECT sum(value) as Total FROM "transactions" WHERE account_id = $1`)
+
+	s.mock.ExpectQuery(query).WithArgs(testData.accountID).WillReturnError(errors.New("Some error"))
+
+	sum, err := s.transactionRepository.GetTransactionSum(testData.accountID)
+
+	assert.Error(s.T(), err)
+	assert.Equal(s.T(), sum, 0)
 
 }
