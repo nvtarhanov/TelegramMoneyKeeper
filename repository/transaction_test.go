@@ -1,3 +1,6 @@
+//For gorm + postgres we cant use ExpectExec https://github.com/DATA-DOG/go-sqlmock/issues/118
+//but it works ok with ExpectQuery
+
 package repository
 
 import (
@@ -23,8 +26,8 @@ type Suite struct {
 	DB   *gorm.DB
 	mock sqlmock.Sqlmock
 
-	transactionRepository TransactionRepository
-	StateRepository       StateRepository
+	repository          Repository
+	transportRepository TransportRepository
 }
 
 func (s *Suite) SetupSuite() {
@@ -46,8 +49,8 @@ func (s *Suite) SetupSuite() {
 
 	require.NoError(s.T(), err)
 
-	s.transactionRepository = NewTransactionRepository(s.DB)
-	s.StateRepository = NewStateRepository(s.DB)
+	s.repository = *NewRepository(s.DB)
+	s.transportRepository = *NewTransportRepository(s.DB)
 }
 
 func TestInit(t *testing.T) {
@@ -80,12 +83,13 @@ func (s *Suite) Test_TransactionRepository_CreateTransaction() {
 
 	s.mock.ExpectBegin()
 
-	s.mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO "transactions" ("created_at","updated_at","account_id","value") VALUES ($1,$2,$3,$4) RETURNING "id"`)).WithArgs(AnyTime{}, AnyTime{}, testData.accountID, testData.value).WillReturnRows(
-		sqlmock.NewRows([]string{"id"}).AddRow(testData.id))
+	s.mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO "transactions" ("created_at","updated_at","account_id","value") VALUES ($1,$2,$3,$4) RETURNING "id"`)).
+		WithArgs(AnyTime{}, AnyTime{}, testData.accountID, testData.value).
+		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(testData.id))
 
 	s.mock.ExpectCommit()
 
-	err := s.transactionRepository.CreateTransaction(account, testData.value)
+	err := s.repository.TransactionRepository.CreateTransaction(account, testData.value)
 
 	require.NoError(s.T(), err)
 
@@ -99,10 +103,12 @@ func (s *Suite) Test_TransactionRepository_CreateTransactionError() {
 
 	s.mock.ExpectBegin()
 
-	s.mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO "transactions" ("created_at","updated_at","account_id","value") VALUES ($1,$2,$3,$4) RETURNING "id"`)).WithArgs(AnyTime{}, AnyTime{}, testData.accountID, testData.value).WillReturnError(errors.New("Some error"))
+	s.mock.ExpectQuery(regexp.QuoteMeta(`INSERT INTO "transactions" ("created_at","updated_at","account_id","value") VALUES ($1,$2,$3,$4) RETURNING "id"`)).
+		WithArgs(AnyTime{}, AnyTime{}, testData.accountID, testData.value).
+		WillReturnError(errors.New("Some error"))
 	s.mock.ExpectRollback()
 
-	err := s.transactionRepository.CreateTransaction(account, testData.value)
+	err := s.repository.TransactionRepository.CreateTransaction(account, testData.value)
 
 	assert.Error(s.T(), err)
 
@@ -118,7 +124,7 @@ func (s *Suite) Test_TransactionRepository_GetTransactionSum() {
 
 	s.mock.ExpectQuery(query).WithArgs(testData.accountID).WillReturnRows(rows)
 
-	sum, err := s.transactionRepository.GetTransactionSum(testData.accountID)
+	sum, err := s.repository.TransactionRepository.GetTransactionSum(testData.accountID)
 
 	fmt.Println(sum)
 
@@ -134,7 +140,7 @@ func (s *Suite) Test_TransactionRepository_GetTransactionSumError() {
 
 	s.mock.ExpectQuery(query).WithArgs(testData.accountID).WillReturnError(errors.New("Some error"))
 
-	sum, err := s.transactionRepository.GetTransactionSum(testData.accountID)
+	sum, err := s.repository.TransactionRepository.GetTransactionSum(testData.accountID)
 
 	assert.Error(s.T(), err)
 	assert.Equal(s.T(), sum, 0)
