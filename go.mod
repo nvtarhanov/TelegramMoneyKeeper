@@ -2,6 +2,8 @@ module github.com/nvtarhanov/TelegramMoneyKeeper
 
 go 1.17
 
+require github.com/golang/mock v1.6.0
+
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect

@@ -28,3 +28,5 @@ migratedown:
 
 	migrate -path db/migration -database "postgresql://root:password@localhost:5432/telegramdb?sslmode=disable" -verbose down
 
+runtest:
+	go test -cover ./...	

@@ -144,15 +144,15 @@ func (cs *CommandServiceHandler) RegisterAccount(chatID int) string {
 	//Check if an account exists
 	_, err := cs.AccountRepository.GetAccountBySessionID(chatID)
 	if err == nil {
-		return "Welcome back!"
+		return message.AccountExists
 	}
 	//Create account
 	if err := cs.AccountRepository.CreateAccount(chatID); err != nil {
-		return "Cannot create account"
+		return message.CannotCreateAccount
 	}
 
 	if err := cs.SalaryRecordRepository.CreateEntrie(chatID); err != nil {
-		return "Cannot create account"
+		return message.CannotCreateAccount
 	}
 
 	return ""
@@ -163,11 +163,11 @@ func (cs *CommandServiceHandler) SetNameByID(chatID int, data string) string {
 
 	account, err := cs.AccountRepository.GetAccountBySessionID(chatID)
 	if err != nil {
-		return "Cannot find account by id"
+		return message.CannotFindAccountByID
 	}
 
 	if err := cs.AccountRepository.SetName(account, data); err != nil {
-		return "Cannot set name for account"
+		return message.CannotSetNameForAccount
 	}
 
 	return ""
@@ -179,16 +179,16 @@ func (cs *CommandServiceHandler) SetMoneyGoalByID(chatID int, data string) strin
 	value, err := strconv.Atoi(data)
 
 	if err != nil {
-		return "You should enter number"
+		return message.YouShouldEnterANumber
 	}
 
 	account, err := cs.AccountRepository.GetAccountBySessionID(chatID)
 	if err != nil {
-		return "Cannot find account by id"
+		return message.CannotFindAccountByID
 	}
 
 	if err := cs.AccountRepository.SetMoneyGoal(account, value); err != nil {
-		return "Cannot set money goal for account"
+		return message.CannotSetMoneyGoalForAccount
 	}
 
 	return ""
@@ -200,16 +200,16 @@ func (cs *CommandServiceHandler) SetStartSumByID(chatID int, data string) string
 	value, err := strconv.Atoi(data)
 
 	if err != nil {
-		return "You should enter number"
+		return message.YouShouldEnterANumber
 	}
 
 	account, err := cs.AccountRepository.GetAccountBySessionID(chatID)
 	if err != nil {
-		return "Cannot find account by id"
+		return message.CannotFindAccountByID
 	}
 
 	if err := cs.AccountRepository.SetStartSum(account, value); err != nil {
-		return "Cannot set start sum for account"
+		return message.CannotSetStartSumForAccount
 	}
 
 	return ""
@@ -221,19 +221,19 @@ func (cs *CommandServiceHandler) SetSalaryPerMonth(chatID int, salary string) st
 	value, err := strconv.Atoi(salary)
 
 	if err != nil {
-		return "You should enter number"
+		return message.YouShouldEnterANumber
 	}
 
 	salaryRecord, err := cs.SalaryRecordRepository.GetEntrieByAccountID(chatID)
 
 	if err != nil {
-		return "Cant set salary per month"
+		return message.CannotSetSalaryPerMonth
 	}
 
 	err = cs.SalaryRecordRepository.SetSalaryPerMonth(salaryRecord, value)
 
 	if err != nil {
-		return "Cant set salary per month"
+		return message.CannotSetSalaryPerMonth
 	}
 
 	return ""
@@ -244,19 +244,19 @@ func (cs *CommandServiceHandler) SetOutcomePerMonth(chatID int, outcome string) 
 	value, err := strconv.Atoi(outcome)
 
 	if err != nil {
-		return "You should enter number"
+		return message.YouShouldEnterANumber
 	}
 
 	salaryRecord, err := cs.SalaryRecordRepository.GetEntrieByAccountID(chatID)
 
 	if err != nil {
-		return "Cant set outcome per month"
+		return message.CannotSetOutcomePerMonth
 	}
 
 	err = cs.SalaryRecordRepository.SetOutcomePerMonth(salaryRecord, value)
 
 	if err != nil {
-		return "Cant set outcome per month"
+		return message.CannotSetOutcomePerMonth
 	}
 
 	return ""
@@ -267,18 +267,18 @@ func (cs *CommandServiceHandler) SetTransaction(chatID int, sum string) string {
 	value, err := strconv.Atoi(sum)
 
 	if err != nil {
-		return "You should enter number"
+		return message.YouShouldEnterANumber
 	}
 
 	account, err := cs.AccountRepository.GetAccountBySessionID(chatID)
 	if err != nil {
-		return "Cannot find account by id"
+		return message.CannotFindAccountByID
 	}
 
 	err = cs.TransactionRepository.CreateTransaction(account, value)
 
 	if err != nil {
-		return "Cannot set transaction"
+		return message.CannotSetTransaction
 	}
 
 	return ""
