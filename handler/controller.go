@@ -7,6 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/service"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/service/command"
+	stateMachine "github.com/nvtarhanov/TelegramMoneyKeeper/service/stateMachine"
 	"github.com/spf13/viper"
 )
 
@@ -30,20 +32,30 @@ func (tg *TelegramHandeler) Handle(c *gin.Context) {
 
 	chatID := message.Message.Chat.ID
 	msgText := message.Message.Text
+	newState := stateMachine.WaitForCommand
+	messageToUser := ""
 
-	state, err := tg.transportService.GetState(chatID)
+	currentState, err := tg.transportService.GetState(chatID)
 
 	if err != nil {
 		log.Print(err)
 	}
 
-	messageReceive, state := tg.service.ProcessCommand(state, msgText, chatID)
-
-	if messageReceive != "" {
-		sendMessage(chatID, messageReceive)
+	if command.IsCommand(msgText) && !command.IsStateLessCommand(msgText) {
+		messageToUser, newState = stateMachine.SwitchState(msgText)
+	} else if command.IsStateLessCommand(msgText) {
+		_, currentState := stateMachine.SwitchState(msgText)
+		messageToUser, newState = tg.service.ProcessCommand(currentState, msgText, chatID)
+	} else {
+		//msgText is data
+		messageToUser, newState = tg.service.ProcessCommand(currentState, msgText, chatID)
 	}
 
-	err = tg.transportService.UpdateState(chatID, state)
+	if messageToUser != "" {
+		sendMessage(chatID, messageToUser)
+	}
+
+	err = tg.transportService.UpdateState(chatID, newState)
 
 	if err != nil {
 		log.Print(err)
