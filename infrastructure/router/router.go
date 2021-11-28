@@ -8,7 +8,7 @@ import (
 func Init(tg *handler.TelegramHandeler) *gin.Engine {
 	r := gin.Default()
 
-	r.POST("/api/v1/update", tg.Handle) //)controller.Handle)
+	r.POST("/api/v1/update", tg.Handle)
 
 	return r
 }

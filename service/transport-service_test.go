@@ -14,13 +14,12 @@ import (
 
 type Suite struct {
 	suite.Suite
-	a int
+	mockRepository *mock_repository.MockStateRepository
 }
 
 func (s *Suite) SetupSuite() {
-
-	s.a = 2
-
+	mockCtrl := gomock.NewController(s.T())
+	s.mockRepository = mock_repository.NewMockStateRepository(mockCtrl)
 }
 
 func TestInit(t *testing.T) {

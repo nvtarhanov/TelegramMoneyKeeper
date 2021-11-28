@@ -45,7 +45,7 @@ func NewConfig() (*Config, error) {
 
 	//Just for log
 	viper.OnConfigChange(func(e fsnotify.Event) {
-		log.Printf("Config file changed:", e.Name)
+		log.Printf("Config file changed: %v", e.Name)
 		if err := viper.ReadInConfig(); err != nil {
 			log.Fatal("Read config error")
 		}
