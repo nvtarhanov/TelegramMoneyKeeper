@@ -65,9 +65,9 @@ func main() {
 		}
 
 		if command.IsCommand(msgText) && !command.IsStateLessCommand(msgText) {
-			message, newState = stateMachine.SwitchState(currentState, msgText)
+			message, newState = stateMachine.SwitchState(msgText)
 		} else if command.IsStateLessCommand(msgText) {
-			_, currentState := stateMachine.SwitchState(currentState, msgText)
+			_, currentState := stateMachine.SwitchState(msgText)
 			message, newState = service.ProcessCommand(currentState, msgText, userID)
 		} else {
 			//msgText is data

@@ -24,14 +24,14 @@ const (
 	WaitForCalculation
 )
 
-func SwitchState(inState int, inCommand string) (string, int) {
+func SwitchState(inCommand string) (string, int) {
 
 	outputeMessage := ""
 	outputState := WaitForCommand
 
 	switch inCommand {
 	case command.CommandStart:
-		//Account registration
+		//Account registration(stateless command)
 		outputState = WaitForRegistration
 		outputeMessage = ""
 	case command.CommandSetGoal:
@@ -53,10 +53,10 @@ func SwitchState(inState int, inCommand string) (string, int) {
 		outputeMessage = message.WaitForTransaction
 		outputState = WaitForTransaction
 	case command.CommandHelp:
-		//return help
+		//return help(stateless command)
 		outputState = WaitForCommand
 	case command.CommandGetProfileData:
-		//return profile data
+		//return profile data(stateless command)
 		outputState = WaitForCommand
 	case command.CommandGetCalculation:
 		//return money calculation with empty message(because it is stateless command)
