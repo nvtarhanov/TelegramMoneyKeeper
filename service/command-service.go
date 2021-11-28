@@ -6,7 +6,6 @@ import (
 
 	"github.com/nvtarhanov/TelegramMoneyKeeper/model"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/repository"
-	"github.com/nvtarhanov/TelegramMoneyKeeper/service/command"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/service/message"
 	state "github.com/nvtarhanov/TelegramMoneyKeeper/service/stateMachine"
 )
@@ -25,111 +24,73 @@ func (cs *CommandServiceHandler) ProcessCommand(inState int, inCommand string, u
 	outputState := state.WaitForCommand
 	errorMessage := ""
 
-	if command.IsCommand(inCommand) {
-		// If inCommand is a command we need to return a new state and message for state commands or return data for GET(stateless commands)
-		switch inCommand {
-		case command.CommandStart:
-			//Account registration
-			errorMessage = cs.RegisterAccount(userID)
-			outputState = state.WaitForNameRegistration
-			outputeMessage = message.WaitForName
-		case command.CommandSetGoal:
-			outputeMessage = message.WaitForGoal
-			outputState = state.WaitForGoal
-		case command.CommandSetSum:
-			outputeMessage = message.WaitForSum
-			outputState = state.WaitForSum
-		case command.CommandSetName:
-			outputeMessage = message.WaitForName
-			outputState = state.WaitForName
-		case command.CommandSetSalary:
-			outputeMessage = message.WaitForSalary
-			outputState = state.WaitForSalary
-		case command.CommandSetOutcome:
-			outputeMessage = message.WaitForOutcome
-			outputState = state.WaitForOutcome
-		case command.CommandSetTransaction:
-			outputeMessage = message.WaitForTransaction
-			outputState = state.WaitForTransaction
-		case command.CommandHelp:
-			//return help
-			outputState = state.WaitForCommand
-		case command.CommandGetProfileData:
-			//return profile data
-			outputState = state.WaitForCommand
-		case command.CommandGetCalculation:
-			//return money calculation
-			outputeMessage = cs.GetCalculatedData(userID)
-			outputState = state.WaitForCommand
-		}
-
-	} else {
-		//if inCommande is data we need to process our state with this data
-		switch inState {
-		case state.WaitForRegistration:
-			//1.create account
-			//2.next step - enter name
-			//3.set state - WaitForName
-		case state.WaitForCommand:
-			outputeMessage = message.UregisteredCommand
-			outputState = state.WaitForCommand
-		case state.WaitForGoal:
-			//Set Goal
-			errorMessage = cs.SetMoneyGoalByID(userID, inCommand)
-			outputeMessage = message.GoalSetted
-			outputState = state.WaitForCommand
-		case state.WaitForSum:
-			//Set Sum
-			errorMessage = cs.SetStartSumByID(userID, inCommand)
-			outputeMessage = message.SumSetted
-			outputState = state.WaitForCommand
-		case state.WaitForName:
-			//Set Name
-			errorMessage = cs.SetNameByID(userID, inCommand)
-			outputeMessage = message.NameSetted
-			outputState = state.WaitForCommand
-		case state.WaitForSalary:
-			//Set Salary
-			errorMessage = cs.SetSalaryPerMonth(userID, inCommand)
-			outputeMessage = message.SalarySetted
-			outputState = state.WaitForCommand
-		case state.WaitForOutcome:
-			//Set Outcome
-			errorMessage = cs.SetOutcomePerMonth(userID, inCommand)
-			outputeMessage = message.OutocmeSetted
-			outputState = state.WaitForCommand
-		case state.WaitForTransaction:
-			//Set Transaction
-			errorMessage = cs.SetTransaction(userID, inCommand)
-			outputeMessage = message.TransactionSetted
-			outputState = state.WaitForCommand
-		//Commands for registration
-		case state.WaitForNameRegistration:
-			//set name
-			errorMessage = cs.SetNameByID(userID, inCommand)
-			outputeMessage = message.WaitForSum
-			outputState = state.WaitForSumRegistration
-		case state.WaitForSumRegistration:
-			//set sum
-			errorMessage = cs.SetStartSumByID(userID, inCommand)
-			outputeMessage = message.WaitForGoal
-			outputState = state.WaitForGoalRegistration
-		case state.WaitForGoalRegistration:
-			//set Goal
-			errorMessage = cs.SetMoneyGoalByID(userID, inCommand)
-			outputeMessage = message.WaitForSalary
-			outputState = state.WaitForSalaryRegistration
-		case state.WaitForSalaryRegistration:
-			//set Salary
-			errorMessage = cs.SetSalaryPerMonth(userID, inCommand)
-			outputeMessage = message.WaitForOutcome
-			outputState = state.WaitForOutcomeRegistration
-		case state.WaitForOutcomeRegistration:
-			//set Outcome
-			errorMessage = cs.SetOutcomePerMonth(userID, inCommand)
-			outputeMessage = message.RegistrationCompleted
-			outputState = state.WaitForCommand
-		}
+	switch inState {
+	case state.WaitForRegistration:
+		errorMessage = cs.RegisterAccount(userID)
+		outputState = state.WaitForNameRegistration
+		outputeMessage = message.WaitForName
+	case state.WaitForCommand:
+		outputeMessage = message.UregisteredCommand
+		outputState = state.WaitForCommand
+	case state.WaitForGoal:
+		//Set Goal
+		errorMessage = cs.SetMoneyGoalByID(userID, inCommand)
+		outputeMessage = message.GoalSetted
+		outputState = state.WaitForCommand
+	case state.WaitForSum:
+		//Set Sum
+		errorMessage = cs.SetStartSumByID(userID, inCommand)
+		outputeMessage = message.SumSetted
+		outputState = state.WaitForCommand
+	case state.WaitForName:
+		//Set Name
+		errorMessage = cs.SetNameByID(userID, inCommand)
+		outputeMessage = message.NameSetted
+		outputState = state.WaitForCommand
+	case state.WaitForSalary:
+		//Set Salary
+		errorMessage = cs.SetSalaryPerMonth(userID, inCommand)
+		outputeMessage = message.SalarySetted
+		outputState = state.WaitForCommand
+	case state.WaitForOutcome:
+		//Set Outcome
+		errorMessage = cs.SetOutcomePerMonth(userID, inCommand)
+		outputeMessage = message.OutocmeSetted
+		outputState = state.WaitForCommand
+	case state.WaitForTransaction:
+		//Set Transaction
+		errorMessage = cs.SetTransaction(userID, inCommand)
+		outputeMessage = message.TransactionSetted
+		outputState = state.WaitForCommand
+	//Commands for registration
+	case state.WaitForNameRegistration:
+		//set name
+		errorMessage = cs.SetNameByID(userID, inCommand)
+		outputeMessage = message.WaitForSum
+		outputState = state.WaitForSumRegistration
+	case state.WaitForSumRegistration:
+		//set sum
+		errorMessage = cs.SetStartSumByID(userID, inCommand)
+		outputeMessage = message.WaitForGoal
+		outputState = state.WaitForGoalRegistration
+	case state.WaitForGoalRegistration:
+		//set Goal
+		errorMessage = cs.SetMoneyGoalByID(userID, inCommand)
+		outputeMessage = message.WaitForSalary
+		outputState = state.WaitForSalaryRegistration
+	case state.WaitForSalaryRegistration:
+		//set Salary
+		errorMessage = cs.SetSalaryPerMonth(userID, inCommand)
+		outputeMessage = message.WaitForOutcome
+		outputState = state.WaitForOutcomeRegistration
+	case state.WaitForOutcomeRegistration:
+		//set Outcome
+		errorMessage = cs.SetOutcomePerMonth(userID, inCommand)
+		outputeMessage = message.RegistrationCompleted
+		outputState = state.WaitForCommand
+	case state.WaitForCalculation:
+		outputeMessage = cs.GetCalculatedData(userID)
+		outputState = state.WaitForCommand
 	}
 
 	if errorMessage != "" {
@@ -289,36 +250,38 @@ func (cs *CommandServiceHandler) GetCalculatedData(chatID int) string {
 	//get account data for calculation
 	account, err := cs.AccountRepository.GetAccountBySessionID(chatID)
 	if err != nil {
-		return "Cannot find account by id"
+		return message.CannotFindAccountByID
 	}
 
 	if account.MoneyGoal == 0 {
-		return "You should set up your money goal, type /setmoneygoal"
+		return message.ShouldSetupMoneyGoal
 	}
 
 	if account.Startsum == 0 {
-		return "You should set up your Startsum, type /setstartsum"
+		return message.ShouldSetupStartSum
 	}
 
 	//get salary data for calculation
 	salaryRecord, err := cs.SalaryRecordRepository.GetEntrieByAccountID(chatID)
 
 	if err != nil {
-		return "Cant find salary record"
+		return message.CantFindSalaryRecord
 	}
 
 	if salaryRecord.OutcomePerMonth == 0 {
-		return "You should set up your salary, type /setsalary"
+		return message.ShouldSetupOutcome
 	}
 
 	//get sum of all transactions if they exist
 	transactionSum, err := cs.TransactionRepository.GetTransactionSum(chatID)
 
 	if err != nil {
-		return "Cant calculate money transactions"
+		return message.CantCalculateMoneyTransactions
 	}
 
-	return createMessageToUser(*account, *salaryRecord, transactionSum)
+	message := createMessageToUser(*account, *salaryRecord, transactionSum)
+
+	return message
 }
 
 func createMessageToUser(account model.Account, salaryRecord model.Entrie, transactionSum int) string {

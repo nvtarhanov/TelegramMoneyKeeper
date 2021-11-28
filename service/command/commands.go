@@ -10,7 +10,7 @@ const (
 	CommandSetOutcome     string = "/setoutcome"
 	CommandSetTransaction string = "/settransaction"
 
-	//Get commands
+	//Get commands (StateLess)
 	CommandHelp           string = "/help"
 	CommandGetProfileData string = "/getprofiledata"
 	CommandGetCalculation string = "/getcalculation"
@@ -35,6 +35,16 @@ func CommandsList() []string {
 	return commadsList
 }
 
+func StateLessCommandsList() []string {
+
+	var commadsList []string
+
+	commadsList = append(commadsList, CommandStart)
+	commadsList = append(commadsList, CommandGetCalculation)
+
+	return commadsList
+}
+
 func IsCommand(command string) bool {
 
 	for _, com := range CommandsList() {
@@ -44,4 +54,16 @@ func IsCommand(command string) bool {
 	}
 
 	return false
+}
+
+func IsStateLessCommand(command string) bool {
+
+	for _, com := range StateLessCommandsList() {
+		if command == com {
+			return true
+		}
+	}
+
+	return false
+
 }

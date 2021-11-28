@@ -534,3 +534,92 @@ func TestSetTransaction(t *testing.T) {
 	}
 
 }
+
+func TestGetCalculatedData(t *testing.T) {
+
+	type mockBehavior func(ar *mock_repository.MockAccountRepository,
+		tr *mock_repository.MockTransactionRepository,
+		sr *mock_repository.MockSalaryRecordRepository)
+
+	testTable := []struct {
+		name            string
+		inputChatID     int
+		ExpectedMessage string
+		mockBehavior    mockBehavior
+	}{
+		{
+			name:            "Error getting account by session id",
+			inputChatID:     1,
+			ExpectedMessage: message.CannotFindAccountByID,
+			mockBehavior: func(ar *mock_repository.MockAccountRepository, tr *mock_repository.MockTransactionRepository, sr *mock_repository.MockSalaryRecordRepository) {
+				ar.EXPECT().GetAccountBySessionID(1).Return(&model.Account{}, errors.New("Mocked error"))
+			},
+		}, {
+			name:            "Error account.MoneyGoal == 0",
+			inputChatID:     1,
+			ExpectedMessage: message.ShouldSetupMoneyGoal,
+			mockBehavior: func(ar *mock_repository.MockAccountRepository, tr *mock_repository.MockTransactionRepository, sr *mock_repository.MockSalaryRecordRepository) {
+				ar.EXPECT().GetAccountBySessionID(1).Return(&model.Account{ID: 1, MoneyGoal: 0}, nil)
+			},
+		}, {
+			name:            "Error account.StartSum == 0",
+			inputChatID:     1,
+			ExpectedMessage: message.ShouldSetupStartSum,
+			mockBehavior: func(ar *mock_repository.MockAccountRepository, tr *mock_repository.MockTransactionRepository, sr *mock_repository.MockSalaryRecordRepository) {
+				ar.EXPECT().GetAccountBySessionID(1).Return(&model.Account{ID: 1, MoneyGoal: 100, Startsum: 0}, nil)
+			},
+		}, {
+			name:            "Error getting salary record by account id",
+			inputChatID:     1,
+			ExpectedMessage: message.CantFindSalaryRecord,
+			mockBehavior: func(ar *mock_repository.MockAccountRepository, tr *mock_repository.MockTransactionRepository, sr *mock_repository.MockSalaryRecordRepository) {
+				ar.EXPECT().GetAccountBySessionID(1).Return(&model.Account{ID: 1, MoneyGoal: 100, Startsum: 50}, nil)
+				sr.EXPECT().GetEntrieByAccountID(1).Return(&model.Entrie{}, errors.New("Mocked error"))
+			},
+		}, {
+			name:            "Error salaryRecord.OutcomePerMonth == 0",
+			inputChatID:     1,
+			ExpectedMessage: message.ShouldSetupOutcome,
+			mockBehavior: func(ar *mock_repository.MockAccountRepository, tr *mock_repository.MockTransactionRepository, sr *mock_repository.MockSalaryRecordRepository) {
+				ar.EXPECT().GetAccountBySessionID(1).Return(&model.Account{ID: 1, MoneyGoal: 100, Startsum: 50}, nil)
+				sr.EXPECT().GetEntrieByAccountID(1).
+					Return(&model.Entrie{ID: 1, SalaryPerMonth: 100, OutcomePerMonth: 0}, nil)
+			},
+		}, {
+			name:            "Error getting transaction sum",
+			inputChatID:     1,
+			ExpectedMessage: message.CantCalculateMoneyTransactions,
+			mockBehavior: func(ar *mock_repository.MockAccountRepository, tr *mock_repository.MockTransactionRepository, sr *mock_repository.MockSalaryRecordRepository) {
+				ar.EXPECT().GetAccountBySessionID(1).Return(&model.Account{ID: 1, MoneyGoal: 100, Startsum: 50}, nil)
+				sr.EXPECT().GetEntrieByAccountID(1).
+					Return(&model.Entrie{ID: 1, SalaryPerMonth: 100, OutcomePerMonth: 50}, nil)
+				tr.EXPECT().GetTransactionSum(1).Return(0, errors.New("Mocked error"))
+			},
+		},
+	}
+
+	for _, testtestCase := range testTable {
+		t.Run(testtestCase.name, func(t *testing.T) {
+			mockCtrl := gomock.NewController(t)
+			defer mockCtrl.Finish()
+			mockAccountRepository := mock_repository.NewMockAccountRepository(mockCtrl)
+			mockTransactionRepository := mock_repository.NewMockTransactionRepository(mockCtrl)
+			mockSalaryRecordRepository := mock_repository.NewMockSalaryRecordRepository(mockCtrl)
+
+			mockRepository := repository.Repository{
+				AccountRepository:      mockAccountRepository,
+				TransactionRepository:  mockTransactionRepository,
+				SalaryRecordRepository: mockSalaryRecordRepository}
+
+			testtestCase.mockBehavior(mockAccountRepository, mockTransactionRepository, mockSalaryRecordRepository)
+
+			commandServiceHandler := NewCommandServiceHandler(mockRepository)
+
+			message := commandServiceHandler.GetCalculatedData(testtestCase.inputChatID)
+
+			assert.Equal(t, message, testtestCase.ExpectedMessage)
+
+		})
+	}
+
+}

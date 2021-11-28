@@ -11,6 +11,9 @@ import (
 	"github.com/nvtarhanov/TelegramMoneyKeeper/infrastructure/database"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/repository"
 	"github.com/nvtarhanov/TelegramMoneyKeeper/service"
+	"github.com/nvtarhanov/TelegramMoneyKeeper/service/command"
+
+	stateMachine "github.com/nvtarhanov/TelegramMoneyKeeper/service/stateMachine"
 )
 
 type CommandHandeler struct {
@@ -46,28 +49,38 @@ func main() {
 	transportService := service.NewTransportServiceHandler(transportRepository)
 	service := service.NewCommandServiceHandler(*repository)
 
-	//commandHandeler := NewCommandHandeler(service, transportService)
-
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print("Enter message: ")
 		msgText, _ := reader.ReadString('\n')
 		msgText = strings.TrimRight(msgText, "\r\n")
 
-		state, err := transportService.GetState(userID)
+		message := ""
+
+		currentState, err := transportService.GetState(userID)
+		newState := stateMachine.WaitForCommand
 
 		if err != nil {
 			log.Print(err)
 		}
 
-		message, state := service.ProcessCommand(state, msgText, userID)
+		if command.IsCommand(msgText) && !command.IsStateLessCommand(msgText) {
+			message, newState = stateMachine.SwitchState(currentState, msgText)
+		} else if command.IsStateLessCommand(msgText) {
+			_, currentState := stateMachine.SwitchState(currentState, msgText)
+			message, newState = service.ProcessCommand(currentState, msgText, userID)
+		} else {
+			//msgText is data
+			message, newState = service.ProcessCommand(currentState, msgText, userID)
+		}
 
-		err = transportService.UpdateState(userID, state)
+		err = transportService.UpdateState(userID, newState)
 
 		if err != nil {
 			log.Print(err)
 		}
 
+		//Send message to user
 		log.Printf("message: %v", message)
 
 	}

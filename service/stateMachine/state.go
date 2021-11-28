@@ -21,6 +21,7 @@ const (
 	WaitForSalaryRegistration
 	WaitForOutcomeRegistration
 	Error
+	WaitForCalculation
 )
 
 func SwitchState(inState int, inCommand string) (string, int) {
@@ -31,9 +32,8 @@ func SwitchState(inState int, inCommand string) (string, int) {
 	switch inCommand {
 	case command.CommandStart:
 		//Account registration
-		//errorMessage = cs.RegisterAccount(userID)
-		outputState = WaitForNameRegistration
-		outputeMessage = message.WaitForName
+		outputState = WaitForRegistration
+		outputeMessage = ""
 	case command.CommandSetGoal:
 		outputeMessage = message.WaitForGoal
 		outputState = WaitForGoal
@@ -59,9 +59,8 @@ func SwitchState(inState int, inCommand string) (string, int) {
 		//return profile data
 		outputState = WaitForCommand
 	case command.CommandGetCalculation:
-		//return money calculation
-		//outputeMessage = cs.GetCalculatedData(userID)
-		outputState = WaitForCommand
+		//return money calculation with empty message(because it is stateless command)
+		outputState = WaitForCalculation
 	}
 
 	return outputeMessage, outputState
